@@ -34,13 +34,13 @@
         <h1 class="mission-title">The Semester Heist</h1>
         <p class="mission-lede">
           Your goal: go from <b>anonymous visitor</b> to <b>campus superadmin</b>.
-          You can't skip floors — each act unlocks the next.
+          You cannot skip an act. Each act opens the next act.
         </p>
 
         <p class="cg-callout"><b>CAUTION</b>This portal has intentional weaknesses. Use it only for authorised learning.</p>
 
         <h3 class="brief-h">Act 0 · Case the campus — start here</h3>
-        <p class="hint">Case the campus before you touch anything sensitive. What do these leak?</p>
+        <p class="hint">Examine the campus before you touch sensitive data. What do these pages show that they must not show?</p>
         <div class="recon-links">
           <a href="/apidoc" target="_blank">API reference ↗</a>
           <a href="/status" target="_blank">Service status ↗</a>
@@ -50,13 +50,13 @@
 
         <h3 class="brief-h">The path</h3>
         <ol class="acts" start="0">
-          <li><b>Case the campus</b> — map the surface (you're here)</li>
-          <li><b>Get a foothold</b> — get a student session (→ sign in)</li>
-          <li><b>Read the class</b> — read other students' records</li>
-          <li><b>Change who you are</b> — elevate your own account</li>
-          <li><b>Rewrite the record</b> — reach staff-only functions</li>
-          <li><b>Breach campus security</b> — break into campus security</li>
-          <li><b>Reach inside &amp; go quiet</b> — reach internal surfaces, then ask why nobody noticed</li>
+          <li><b>Case the campus</b> — find the attack surface (you are here)</li>
+          <li><b>Get a foothold</b> — open a student session (sign in)</li>
+          <li><b>Read the class</b> — read the records of other students</li>
+          <li><b>Change who you are</b> — give your account more privileges</li>
+          <li><b>Rewrite the record</b> — use functions for staff only</li>
+          <li><b>Breach campus security</b> — go into the campus security store</li>
+          <li><b>Reach inside &amp; go quiet</b> — reach internal services, then find why nobody saw you</li>
         </ol>
 
         <div class="brief-docs">
@@ -69,14 +69,14 @@
       <div class="card login-card">
         <span class="cg-eyebrow">Act 1 · Get a foothold</span>
         <h2>Sign in</h2>
-        <p class="hint">The seeded student account below gets you a foothold. What else might this form accept?</p>
+        <p class="hint">The form contains a seeded student account. Use it to open a session. What other input does this form accept?</p>
         <label>Username</label>
         <input id="login-user" value="student1" placeholder="student1" />
         <label>Password</label>
         <input id="login-pass" type="password" value="student1" placeholder="••••••••" />
         <button class="btn" onclick="doLogin()">Sign in</button>
         <pre class="out hidden" id="login-out"></pre>
-        <p class="hint seeded">Seeded roles: <code>student1</code> / <code>student2</code> (students) · <code>prof_lang</code> (faculty). Passwords = usernames, except faculty.</p>
+        <p class="hint seeded">Seeded accounts: <code>student1</code> and <code>student2</code> (students), <code>prof_lang</code> (faculty). For a student, the password is the username.</p>
       </div>
     </section>
 
@@ -100,7 +100,7 @@
           </div>
           <div class="card">
             <h2>Edit profile</h2>
-            <p class="hint">Send a JSON patch of the fields you want to change.</p>
+            <p class="hint">Send a JSON patch with the fields that you want to change.</p>
             <label>Patch (JSON)</label>
             <textarea id="profile-patch">{ "full_name": "Sam Turner", "email": "sam@campus.edu" }</textarea>
             <button class="btn" onclick="patchProfile()">Save changes</button>
@@ -114,7 +114,7 @@
         <div class="grid">
           <div class="card">
             <h2>Transcript</h2>
-            <p class="hint">Look up an academic transcript by student id.</p>
+            <p class="hint">Find an academic transcript by student id.</p>
             <label>Student id</label>
             <input id="tr-id" value="1" />
             <button class="btn" onclick="loadTranscript()">View transcript</button>
@@ -133,7 +133,7 @@
           </div>
           <div class="card">
             <h2>Faculty · set grade</h2>
-            <p class="hint">Update the grade on a transcript entry.</p>
+            <p class="hint">Change the grade of a transcript entry.</p>
             <label>Transcript id</label>
             <input id="gr-id" value="1" />
             <label>Grade</label>
@@ -149,7 +149,7 @@
         <div class="grid">
           <div class="card">
             <h2>Announcements</h2>
-            <p class="hint">Course announcements from faculty.</p>
+            <p class="hint">Announcements from the faculty.</p>
             <button class="btn ghost" onclick="loadAnnouncements()">Refresh</button>
             <div id="ann-list"></div>
             <label>Post an announcement (markdown)</label>
@@ -158,7 +158,7 @@
           </div>
           <div class="card">
             <h2>Course materials</h2>
-            <p class="hint">Upload a file. An optional checksum can be supplied.</p>
+            <p class="hint">Upload a file. You can add a checksum.</p>
             <label>File</label>
             <input id="mat-file" type="file" />
             <label>Checksum (optional)</label>
@@ -183,7 +183,7 @@
           </div>
           <div class="card">
             <h2>Import timetable</h2>
-            <p class="hint">Sync your timetable from a third-party feed.</p>
+            <p class="hint">Import your timetable from a third-party feed.</p>
             <label>Feed URL</label>
             <input id="tt-url" placeholder="https://timetables.example.edu/feed.json" />
             <button class="btn" onclick="importTimetable()">Import</button>
@@ -197,7 +197,7 @@
         <div class="grid">
           <div class="card">
             <h2>Campus security login</h2>
-            <p class="hint">Restricted to campus security staff.</p>
+            <p class="hint">Only for campus security staff.</p>
             <label>Username</label>
             <input id="cs-user" placeholder="Superadmin" />
             <label>Password</label>
@@ -207,12 +207,12 @@
           </div>
           <div class="card">
             <h2>Campus SSO token</h2>
-            <p class="hint">Exchange credentials for a campus token, then inspect it.</p>
+            <p class="hint">Send your credentials to receive a campus token. Then examine the token.</p>
             <div class="row">
               <input id="sso-user" placeholder="username" />
               <input id="sso-pass" type="password" placeholder="password" />
             </div>
-            <button class="btn" onclick="ssoToken()">Get token</button>
+            <button class="btn" onclick="ssoToken()">Request token</button>
             <label>Token</label>
             <textarea id="sso-token"></textarea>
             <div class="row">
@@ -230,7 +230,7 @@
   <footer class="cg-footer">
     <div class="cg-wrap">
       <a class="cg-brand" href="/"><img src="assets/cybagard/logos/mark-cream.png" alt="" width="26" height="26" /><span>cyba-dojo</span></a>
-      <span>An intentionally vulnerable learning environment · <a href="/apidoc" target="_blank">API reference</a> · Keep it in the lab.</span>
+      <span>A learning environment with intentional weaknesses · <a href="/apidoc" target="_blank">API reference</a> · Use it only in a lab.</span>
     </div>
   </footer>
 

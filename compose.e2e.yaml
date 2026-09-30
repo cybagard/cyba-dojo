@@ -1,0 +1,47 @@
+# Self-contained in-container E2E stack.
+#
+# Everything runs inside Compose with no host port exposure or host-side Docker
+# requirements:
+#
+#     postgres :12-alpine   (trust)
+#     mysql    :8.0         (root/native)
+#     mongo    :latest
+#     test     (node:22)    — runs both suites:
+#         test/api/*  24 tests   via `npm run test:api`
+#         test/ui/*    7 specs   via `npm run test:ui`  (Playwright, container Chromium)
+#
+# Run it (foreground; exits with the suites' combined code, 0 = all pass):
+#
+#     docker compose -f compose.e2e.yaml up --abort-on-container-exit --exit-code-from test
+#
+# The three datastores are inherited from compose.datastores.yaml and remain internal
+# (no host ports). Re-running rebuilds the stack fresh — no stale volumes.
+
+name: cyba-dojo-e2e
+
+include:
+  - ./compose.datastores.yaml
+
+services:
+  test:
+    image: node:22
+    working_dir: /work
+    volumes:
+      - .:/work
+      - /work/node_modules
+    environment:
+      PGHOST: postgres
+      MYSQL_HOST: mysql
+      MONGO_HOST: mongo
+      UI_PORT: "3000"
+      NODE_ENV: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    command:
+      ["sh", "-c",
+       "set -x; npm install; npx playwright install --with-deps chromium; npm run test:api; npm run test:ui"]

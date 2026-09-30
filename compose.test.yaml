@@ -1,0 +1,27 @@
+# Ephemeral datastores for the host-run E2E suites (`npm test` → test/run-e2e.sh).
+#
+# The app (and the API/UI test harnesses) run OUTSIDE Docker here, so the databases
+# are published on localhost and reached via 127.0.0.1. A distinct project name keeps
+# this stack from colliding with a running campus.
+#
+#   docker compose -f compose.test.yaml up -d        # start
+#   npm test                                         # runs the suites, then tears down
+#
+# The datastore services (images, weak credentials, healthchecks) are inherited from
+# compose.datastores.yaml; only the host ports are added locally.
+
+name: cyba-dojo-test
+
+include:
+  - ./compose.datastores.yaml
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+  mysql:
+    ports:
+      - "3306:3306"
+  mongo:
+    ports:
+      - "27017:27017"

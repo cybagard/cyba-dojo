@@ -1,0 +1,83 @@
+# Cyba Dojo — canonical Compose project.
+#
+# Compose auto-loads this file (it is named compose.yaml), so one command brings up
+# the whole campus — the app plus PostgreSQL, MySQL and MongoDB:
+#
+#   docker compose up -d --build
+#
+# Optional add-on services live behind profiles and only start when asked:
+#
+#   docker compose --profile attacker up -d --build   # + Kali attacker box on the net
+#   docker compose --profile waf      up -d --build   # + ModSecurity WAF on :8080
+#
+# On a normal local shell Compose also merges compose.override.yaml automatically,
+# which turns vulnweb into a live-reload dev server. Get the plain production stack
+# instead with:  CI=1 docker compose up -d --build
+#
+# Other entry points (same datastores, different app side):
+#   compose.hub.yaml   run the pre-built published image instead of building source
+#   compose.test.yaml  host-run E2E datastores only (what `npm test` spins up)
+#   compose.e2e.yaml   the whole suite running inside a container
+#
+# The app's environment below is intentionally weak — those weak defaults ARE the
+# vulnerabilities. See docs/VULN_MAP.md.
+name: cyba-dojo
+
+include:
+  - ./compose.datastores.yaml
+
+services:
+  vulnweb:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PGHOST: postgres
+      PGUSER: bookuser
+      PGDATABASE: books
+      PGPORT: "5432"
+      MYSQL_HOST: mysql
+      MONGO_HOST: mongo
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test:
+        ["CMD", "node", "-e",
+         "fetch('http://127.0.0.1:3000/status').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    restart: unless-stopped
+
+  # Attacker box — an interactive Kali Linux shell on the campus network.
+  # Start it with: docker compose --profile attacker up -d --build
+  kali:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.Kali
+    profiles: ["attacker"]
+    stdin_open: true
+    tty: true
+    depends_on:
+      - vulnweb
+
+  # Defensive layer — ModSecurity + CRS in reverse-proxy mode in front of the app.
+  # Start it with: docker compose --profile waf up -d --build  (listens on :8080)
+  waf:
+    image: owasp/modsecurity-crs:latest
+    profiles: ["waf"]
+    ports:
+      - "8080:80"
+    environment:
+      PARANOIA: "1"
+      PROXY: "1"
+      PROXYLOCATION: "http://vulnweb:3000/"
+    depends_on:
+      - vulnweb

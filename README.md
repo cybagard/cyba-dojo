@@ -200,8 +200,14 @@ If any of that sounds fun to build, contributions are welcome.
 
 ## Licensing
 
-Released under the MIT License (see `LICENSE.md`). Copyright 2026 cybagard. Share and
-enjoy — just keep it in the lab.
+Copyright 2026 cybagard. Released under the GNU General Public License v3.0 only
+(`GPL-3.0-only`, see `LICENSE`). You may use, study, share and change the dojo; if you
+distribute a modified version, you must release it under the same licence with its
+source. Share and enjoy — just keep it in the lab.
+
+Bundled third-party files keep their own licences: the Space Grotesk and JetBrains Mono
+fonts in `public/portal/assets/cybagard/fonts/` are under the SIL Open Font License 1.1,
+and the generated API reference in `public/apidoc/` includes its own third-party assets.
 
 ## Acknowledgements
 

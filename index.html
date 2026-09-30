@@ -8,90 +8,19 @@
   <meta name="theme-color" content="#000000">
   <meta property="og:title" content="cyba-dojo">
   <meta property="og:description" content="Attack the campus. Find the control that stops you.">
-  <meta property="og:image" content="assets/logos/mark-cream-1024.png">
-  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="assets/css/tokens.css">
-  <link rel="stylesheet" href="assets/css/cybagard.css">
-  <style>
-    html { scroll-behavior: smooth; scroll-padding-top: var(--space-10); }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-    body { margin: 0; }
-    .skip { position: absolute; left: -9999px; }
-    .skip:focus { left: var(--space-4); top: var(--space-4); z-index: 20; padding: var(--space-2) var(--space-4); background: var(--gold); color: var(--ink); border-radius: var(--radius-pill); }
-    .cg-root a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
-    .cg-brand span { white-space: nowrap; }
-    @media (max-width: 420px) { .cg-nav .cg-brand small { display: none; } }
-    .lede { color: var(--fg-muted); font-size: 19px; margin: 0; }
-
-    /* Hero pills on ink. */
-    .hero-meta { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-6); }
-    .hero-meta .cg-pill--off { border-color: var(--ink-border); color: var(--on-ink-soft); }
-
-    /* Flow: two steps, then the two outcomes. */
-    .flow { display: grid; grid-template-columns: 1fr 40px 1fr 40px 1.3fr; align-items: stretch; }
-    .flow > * { min-width: 0; }
-    .flow .arrow { display: grid; place-items: center; color: var(--accent); font: 700 24px var(--font-mono); }
-    .flow .cg-h3 { margin-top: var(--space-1); }
-    .outcomes { display: grid; gap: 14px; }
-    .outcome { border-radius: var(--radius); padding: 20px 22px; border: 1px solid var(--border); background: var(--card); }
-    .outcome p { margin: 6px 0 0; color: var(--fg-muted); font-size: 16px; }
-    .outcome--next { background: var(--bg-alt); }
-    .outcome--flip { border: 2px solid var(--gold); }
-    .outcome .cg-pill { margin-right: 6px; }
-    .flow + .cg-callout { margin-top: var(--space-7); }
-    @media (max-width: 900px) {
-      .flow { grid-template-columns: 1fr; }
-      .flow .arrow { height: 40px; transform: rotate(90deg); }
-    }
-
-    /* Split: checklist beside a terminal. */
-    .split { display: grid; grid-template-columns: 1fr 1.1fr; gap: var(--space-9); align-items: center; }
-    .split > * { min-width: 0; }
-    .split .cg-checklist { margin-top: var(--space-7); }
-    @media (max-width: 900px) { .split { grid-template-columns: 1fr; gap: 36px; } }
-
-    /* Rings: three groups of acts around the gold core. */
-    .rings-wrap { display: grid; grid-template-columns: 380px 1fr; gap: var(--space-9); align-items: center; }
-    .rings-wrap > * { min-width: 0; }
-    .rings { color: var(--fg); }
-    .rings svg { width: 100%; height: auto; display: block; }
-    .rings .r { fill: none; }
-    @media (max-width: 900px) { .rings-wrap { grid-template-columns: 1fr; } .rings { max-width: 300px; margin: 0 auto; } }
-    .layers { display: grid; gap: var(--space-4); }
-    .layer { display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: start; padding: 22px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); }
-    .layer > * { min-width: 0; }
-    .layer .lvl { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font: 700 18px var(--font-mono); border: 3px solid var(--fg); }
-    .layer:nth-child(2) .lvl { border-color: var(--gold); }
-    .layer:nth-child(3) .lvl { background: var(--fg); color: var(--bg); }
-    .layer p { margin: 0; color: var(--fg-muted); font-size: 16px; }
-    .acts { list-style: none; padding: 0; margin: var(--space-3) 0 0; display: grid; gap: 6px; font-size: 15px; color: var(--fg-muted); }
-    .acts b { font: 600 12px var(--font-mono); letter-spacing: .08em; color: var(--accent); margin-right: var(--space-2); }
-
-    /* Coverage tables. */
-    .table-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin: 0 0 var(--space-4); }
-    .table-head h3 { margin: 0; }
-    .cg-table td:first-child { font: 600 14px var(--font-mono); white-space: nowrap; }
-    .cg-table td:last-child { font: 13px/1.5 var(--font-mono); color: var(--fg-muted); }
-    .note { font-size: 15px; color: var(--fg-muted); margin: var(--space-6) 0 0; }
-
-    /* Endpoint cards. */
-    .cg-ep { margin-bottom: 10px; }
-    .cg-ep code { font-size: 16px; overflow-wrap: anywhere; }
-    .status-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
-
-    .cg-band .cg-h2 { color: var(--cream); }
-  </style>
+  <meta property="og:image" content="assets/cybagard/logos/mark-cream-1024.png">
+  <link rel="icon" type="image/png" href="assets/cybagard/logos/favicon.png">
+  <link rel="stylesheet" href="assets/cybagard/fonts.css">
+  <link rel="stylesheet" href="assets/cybagard/tokens.css">
+  <link rel="stylesheet" href="assets/cybagard/cybagard.css">
 </head>
 <body class="cg-root">
-  <a class="skip" href="#main">Go to the content</a>
+  <a class="cg-skip" href="#main">Go to the content</a>
 
   <nav class="cg-nav" aria-label="Primary">
     <div class="cg-wrap">
       <a class="cg-brand" href="#top">
-        <img src="assets/logos/mark-cream.png" alt="" width="30" height="30">
+        <img src="assets/cybagard/logos/mark-cream.png" alt="" width="30" height="30">
         <span>cyba-dojo</span>
         <small>cybagard</small>
       </a>
@@ -120,7 +49,7 @@
           <a class="cg-btn cg-btn--gold" href="#quickstart">Start the dojo →</a>
           <a class="cg-btn cg-btn--ghost" href="https://github.com/cybagard/cyba-dojo">View on GitHub</a>
         </div>
-        <div class="hero-meta" aria-label="Stack">
+        <div class="cg-status-row" aria-label="Stack">
           <span class="cg-pill cg-pill--off">Node.js 22</span>
           <span class="cg-pill cg-pill--off">Express 5</span>
           <span class="cg-pill cg-pill--off">PostgreSQL</span>
@@ -130,7 +59,7 @@
         </div>
       </div>
       <div class="cg-hero__mark">
-        <img src="assets/logos/mark-cream.png" alt="" width="360" height="360">
+        <img src="assets/cybagard/logos/mark-cream.png" alt="" width="360" height="360">
       </div>
     </div>
   </header>
@@ -144,25 +73,25 @@
           <h2 class="cg-h2">Weaknesses are in usual features.</h2>
           <p>Most tutorials show one weakness at a time. Real applications are different. In the dojo, each weakness gives you access to the next weakness. The Mission Console shows you where to look.</p>
         </div>
-        <div class="flow">
+        <div class="cg-flow">
           <div class="cg-card cg-card--accent-top">
             <span class="cg-card__num">STEP 1</span>
             <h3 class="cg-h3">Sign in as a student</h3>
             <p>Start the campus. Then click the sign-in button. The form contains <code>student1</code> / <code>student1</code>.</p>
           </div>
-          <div class="arrow" aria-hidden="true">→</div>
+          <div class="cg-flow__arrow" aria-hidden="true">→</div>
           <div class="cg-card cg-card--accent-top">
             <span class="cg-card__num">STEP 2</span>
             <h3 class="cg-h3">Do the current act</h3>
             <p>The Mission Console shows the act and a hint. A button opens the screen for the act.</p>
           </div>
-          <div class="arrow" aria-hidden="true">→</div>
-          <div class="outcomes">
-            <div class="outcome outcome--next">
+          <div class="cg-flow__arrow" aria-hidden="true">→</div>
+          <div class="cg-outcomes">
+            <div class="cg-outcome cg-outcome--muted">
               <span class="cg-pill cg-pill--off">complete</span><b>The next act opens.</b>
               <p>You found the weakness. The storyline moves to the next part of the campus.</p>
             </div>
-            <div class="outcome outcome--flip">
+            <div class="cg-outcome cg-outcome--gold">
               <span class="cg-pill cg-pill--on">defend</span><b>Name the control.</b>
               <p>Each act ends with one question: which control must stop this attack?</p>
             </div>
@@ -204,11 +133,11 @@
     </section>
 
     <section class="cg-section">
-      <div class="cg-wrap split">
+      <div class="cg-wrap cg-split">
         <div>
           <span class="cg-eyebrow">Vulnerability map</span>
           <h2 class="cg-h2">The map shows the location, not the attack.</h2>
-          <p class="lede">Each entry gives the location and the class of a weakness. It does not give the payload. You must find the technique.</p>
+          <p class="cg-lede">Each entry gives the location and the class of a weakness. It does not give the payload. You must find the technique.</p>
           <ul class="cg-checklist">
             <li><span class="cg-tick" aria-hidden="true">✓</span><div><b>Each weakness has an id.</b> Use the ids to grade a class or a CTF. Do not publish the payloads.</div></li>
             <li><span class="cg-tick" aria-hidden="true">✓</span><div><b>One route shows the correct method.</b> <code>GET /api/v1/library/list/book/:id</code> uses a bound parameter. Compare it with the routes that have injection.</div></li>
@@ -240,45 +169,45 @@
           <h2 class="cg-h2">Seven acts in three rings.</h2>
           <p>You start outside the campus and move to the center. Each act opens the next act. For the first acts, you use only a browser. For the last acts, you use <code>curl</code> or the browser developer tools.</p>
         </div>
-        <div class="rings-wrap">
-          <div class="rings" aria-hidden="true">
+        <div class="cg-rings-wrap">
+          <div class="cg-rings" aria-hidden="true">
             <svg viewBox="0 0 200 200">
-              <circle class="r" cx="100" cy="100" r="88" stroke="currentColor" stroke-width="12" stroke-dasharray="470 83" transform="rotate(-60 100 100)"/>
-              <circle class="r" cx="100" cy="100" r="64" stroke="#C5B081" stroke-width="12" stroke-dasharray="330 72" transform="rotate(120 100 100)"/>
-              <circle class="r" cx="100" cy="100" r="40" stroke="currentColor" stroke-width="12" stroke-dasharray="200 51" transform="rotate(-30 100 100)"/>
-              <circle cx="100" cy="100" r="9" fill="#C5B081"/>
+              <circle cx="100" cy="100" r="88" stroke="currentColor" stroke-width="12" stroke-dasharray="470 83" transform="rotate(-60 100 100)"/>
+              <circle cx="100" cy="100" r="64" stroke="#C5B081" stroke-width="12" stroke-dasharray="330 72" transform="rotate(120 100 100)"/>
+              <circle cx="100" cy="100" r="40" stroke="currentColor" stroke-width="12" stroke-dasharray="200 51" transform="rotate(-30 100 100)"/>
+              <circle cx="100" cy="100" r="9"/>
             </svg>
           </div>
-          <div class="layers">
-            <div class="layer">
-              <div class="lvl">1</div>
+          <div class="cg-layers">
+            <div class="cg-layer">
+              <div class="cg-layer__lvl">1</div>
               <div>
                 <h3 class="cg-h3">Go into the campus</h3>
                 <p>Find the attack surface. Then open a student session.</p>
-                <ul class="acts">
+                <ul class="cg-layer__list">
                   <li><b>ACT 0</b>Examine the campus: reconnaissance and information disclosure.</li>
                   <li><b>ACT 1</b>Sign in: authentication weaknesses.</li>
                 </ul>
               </div>
             </div>
-            <div class="layer">
-              <div class="lvl">2</div>
+            <div class="cg-layer">
+              <div class="cg-layer__lvl">2</div>
               <div>
                 <h3 class="cg-h3">Increase your access</h3>
                 <p>Read the data of other students. Change your role. Then use the staff functions.</p>
-                <ul class="acts">
+                <ul class="cg-layer__list">
                   <li><b>ACT 2</b>Read the class: broken object level authorization.</li>
                   <li><b>ACT 3</b>Change your identity: mass assignment.</li>
                   <li><b>ACT 4</b>Change the record: broken function level authorization.</li>
                 </ul>
               </div>
             </div>
-            <div class="layer">
-              <div class="lvl">3</div>
+            <div class="cg-layer">
+              <div class="cg-layer__lvl">3</div>
               <div>
                 <h3 class="cg-h3">Control the center</h3>
                 <p>Attack campus security. Send requests to internal services. Then find why no alarm occurred.</p>
-                <ul class="acts">
+                <ul class="cg-layer__list">
                   <li><b>ACT 5</b>Attack campus security: NoSQL injection and broken cryptography.</li>
                   <li><b>ACT 6</b>Go inside and stay hidden: SSRF and missing logs.</li>
                 </ul>
@@ -298,47 +227,47 @@
         </div>
         <div class="cg-grid cg-g2">
           <div>
-            <div class="table-head"><h3 class="cg-h3">OWASP Top 10 · 2021</h3><span class="cg-pill cg-pill--on">10 / 10</span></div>
+            <div class="cg-table-head"><h3 class="cg-h3">OWASP Top 10 · 2021</h3><span class="cg-pill cg-pill--on">10 / 10</span></div>
             <div class="cg-card cg-table-card">
               <table class="cg-table">
                 <thead><tr><th scope="col">#</th><th scope="col">Category</th><th scope="col">Ids</th></tr></thead>
                 <tbody>
-                  <tr><td>A01</td><td>Broken Access Control</td><td>BAC-1…6, BOP-1</td></tr>
-                  <tr><td>A02</td><td>Cryptographic Failures</td><td>CRY-1…4</td></tr>
-                  <tr><td>A03</td><td>Injection</td><td>INJ-1…6, XSS-1</td></tr>
-                  <tr><td>A04</td><td>Insecure Design</td><td>DSN-1…3, AUT-1</td></tr>
-                  <tr><td>A05</td><td>Security Misconfiguration</td><td>CFG-1…5</td></tr>
-                  <tr><td>A06</td><td>Vulnerable and Outdated Components</td><td>CMP-1</td></tr>
-                  <tr><td>A07</td><td>Identification and Authentication Failures</td><td>AUT-1, CRY-1…4</td></tr>
-                  <tr><td>A08</td><td>Software and Data Integrity Failures</td><td>INT-1</td></tr>
-                  <tr><td>A09</td><td>Security Logging and Monitoring Failures</td><td>LOG-1, LOG-2</td></tr>
-                  <tr><td>A10</td><td>Server-Side Request Forgery</td><td>SSR-1</td></tr>
+                  <tr><td class="cg-key">A01</td><td>Broken Access Control</td><td class="cg-ref">BAC-1…6, BOP-1</td></tr>
+                  <tr><td class="cg-key">A02</td><td>Cryptographic Failures</td><td class="cg-ref">CRY-1…4</td></tr>
+                  <tr><td class="cg-key">A03</td><td>Injection</td><td class="cg-ref">INJ-1…6, XSS-1</td></tr>
+                  <tr><td class="cg-key">A04</td><td>Insecure Design</td><td class="cg-ref">DSN-1…3, AUT-1</td></tr>
+                  <tr><td class="cg-key">A05</td><td>Security Misconfiguration</td><td class="cg-ref">CFG-1…5</td></tr>
+                  <tr><td class="cg-key">A06</td><td>Vulnerable and Outdated Components</td><td class="cg-ref">CMP-1</td></tr>
+                  <tr><td class="cg-key">A07</td><td>Identification and Authentication Failures</td><td class="cg-ref">AUT-1, CRY-1…4</td></tr>
+                  <tr><td class="cg-key">A08</td><td>Software and Data Integrity Failures</td><td class="cg-ref">INT-1</td></tr>
+                  <tr><td class="cg-key">A09</td><td>Security Logging and Monitoring Failures</td><td class="cg-ref">LOG-1, LOG-2</td></tr>
+                  <tr><td class="cg-key">A10</td><td>Server-Side Request Forgery</td><td class="cg-ref">SSR-1</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
           <div>
-            <div class="table-head"><h3 class="cg-h3">OWASP API Security Top 10 · 2023</h3><span class="cg-pill cg-pill--on">10 / 10</span></div>
+            <div class="cg-table-head"><h3 class="cg-h3">OWASP API Security Top 10 · 2023</h3><span class="cg-pill cg-pill--on">10 / 10</span></div>
             <div class="cg-card cg-table-card">
               <table class="cg-table">
                 <thead><tr><th scope="col">#</th><th scope="col">Category</th><th scope="col">Ids</th></tr></thead>
                 <tbody>
-                  <tr><td>API1</td><td>Broken Object Level Authorization</td><td>BAC-1, BAC-2, BAC-6</td></tr>
-                  <tr><td>API2</td><td>Broken Authentication</td><td>AUT-1, CRY-3, CRY-4</td></tr>
-                  <tr><td>API3</td><td>Broken Object Property Level Authorization</td><td>BOP-1, BOP-2</td></tr>
-                  <tr><td>API4</td><td>Unrestricted Resource Consumption</td><td>DSN-2</td></tr>
-                  <tr><td>API5</td><td>Broken Function Level Authorization</td><td>BAC-3…5</td></tr>
-                  <tr><td>API6</td><td>Unrestricted Access to Sensitive Business Flows</td><td>DSN-1, DSN-3</td></tr>
-                  <tr><td>API7</td><td>Server-Side Request Forgery</td><td>SSR-1</td></tr>
-                  <tr><td>API8</td><td>Security Misconfiguration</td><td>CFG-1…5</td></tr>
-                  <tr><td>API9</td><td>Improper Inventory Management</td><td>BAC-6, CFG-3, CFG-4</td></tr>
-                  <tr><td>API10</td><td>Unsafe Consumption of APIs</td><td>UAP-1</td></tr>
+                  <tr><td class="cg-key">API1</td><td>Broken Object Level Authorization</td><td class="cg-ref">BAC-1, BAC-2, BAC-6</td></tr>
+                  <tr><td class="cg-key">API2</td><td>Broken Authentication</td><td class="cg-ref">AUT-1, CRY-3, CRY-4</td></tr>
+                  <tr><td class="cg-key">API3</td><td>Broken Object Property Level Authorization</td><td class="cg-ref">BOP-1, BOP-2</td></tr>
+                  <tr><td class="cg-key">API4</td><td>Unrestricted Resource Consumption</td><td class="cg-ref">DSN-2</td></tr>
+                  <tr><td class="cg-key">API5</td><td>Broken Function Level Authorization</td><td class="cg-ref">BAC-3…5</td></tr>
+                  <tr><td class="cg-key">API6</td><td>Unrestricted Access to Sensitive Business Flows</td><td class="cg-ref">DSN-1, DSN-3</td></tr>
+                  <tr><td class="cg-key">API7</td><td>Server-Side Request Forgery</td><td class="cg-ref">SSR-1</td></tr>
+                  <tr><td class="cg-key">API8</td><td>Security Misconfiguration</td><td class="cg-ref">CFG-1…5</td></tr>
+                  <tr><td class="cg-key">API9</td><td>Improper Inventory Management</td><td class="cg-ref">BAC-6, CFG-3, CFG-4</td></tr>
+                  <tr><td class="cg-key">API10</td><td>Unsafe Consumption of APIs</td><td class="cg-ref">UAP-1</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-        <p class="note"><b>Test:</b> <code>npm test</code> starts the four datastores. It makes sure that each id in the tables operates as the map shows.</p>
+        <p class="cg-note"><b>Test:</b> <code>npm test</code> starts the four datastores. It makes sure that each id in the tables operates as the map shows.</p>
       </div>
     </section>
 
@@ -397,48 +326,48 @@ cd cyba-dojo</pre></div>
           <div class="cg-card">
             <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/students/login</code></div>
             <p>Student identity and profiles. You start here.</p>
-            <div class="status-row"><span class="cg-pill cg-pill--on">SQLite</span><span class="cg-pill cg-pill--off">Act 1</span></div>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">SQLite</span><span class="cg-pill cg-pill--off">Act 1</span></div>
           </div>
           <div class="cg-card">
-            <div class="cg-ep"><span class="cg-verb cg-verb--post">PATCH</span><code>/me</code></div>
+            <div class="cg-ep"><span class="cg-verb cg-verb--write">PATCH</span><code>/me</code></div>
             <p>Your profile, avatar and timetable import.</p>
-            <div class="status-row"><span class="cg-pill cg-pill--on">SQLite</span><span class="cg-pill cg-pill--off">Acts 3, 6</span></div>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">SQLite</span><span class="cg-pill cg-pill--off">Acts 3, 6</span></div>
           </div>
           <div class="cg-card">
             <div class="cg-ep"><span class="cg-verb">GET</span><code>/registrar/transcript/:studentId</code></div>
             <p>Transcripts, enrollment and grades.</p>
-            <div class="status-row"><span class="cg-pill cg-pill--on">PostgreSQL</span><span class="cg-pill cg-pill--off">Acts 2, 4</span></div>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">PostgreSQL</span><span class="cg-pill cg-pill--off">Acts 2, 4</span></div>
           </div>
           <div class="cg-card">
             <div class="cg-ep"><span class="cg-verb">GET</span><code>/library/list/book/:id</code></div>
             <p>Library books. This route shows the correct method.</p>
-            <div class="status-row"><span class="cg-pill cg-pill--on">PostgreSQL</span><span class="cg-pill cg-pill--off">Reference</span></div>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">PostgreSQL</span><span class="cg-pill cg-pill--off">Reference</span></div>
           </div>
           <div class="cg-card">
             <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/lending/login</code></div>
             <p>Sign-in for the library staff.</p>
-            <div class="status-row"><span class="cg-pill cg-pill--on">MySQL</span></div>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">MySQL</span></div>
           </div>
           <div class="cg-card">
             <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/campus/security/login</code></div>
             <p>Sign-in for the campus security superadmins.</p>
-            <div class="status-row"><span class="cg-pill cg-pill--on">MongoDB</span><span class="cg-pill cg-pill--off">Act 5</span></div>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">MongoDB</span><span class="cg-pill cg-pill--off">Act 5</span></div>
           </div>
           <div class="cg-card">
             <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/sso/token</code></div>
             <p>Campus single sign-on. The token format is custom.</p>
-            <div class="status-row"><span class="cg-pill cg-pill--on">Stateless</span><span class="cg-pill cg-pill--off">Act 5</span></div>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">Stateless</span><span class="cg-pill cg-pill--off">Act 5</span></div>
           </div>
           <div class="cg-card">
             <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/courses/announcements</code></div>
             <p>Course materials, file uploads and announcements.</p>
-            <div class="status-row"><span class="cg-pill cg-pill--on">SQLite + files</span></div>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">SQLite + files</span></div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="cg-section cg-band cg-inverse">
+    <section class="cg-band cg-section">
       <div class="cg-wrap">
         <h2 class="cg-h2">Start the dojo.</h2>
         <p>Start the campus. Sign in as <code>student1</code>. Do the acts in the Mission Console. After each act, name the control that must stop the attack.</p>
@@ -452,7 +381,7 @@ cd cyba-dojo</pre></div>
 
   <footer class="cg-footer">
     <div class="cg-wrap">
-      <a class="cg-brand" href="https://github.com/cybagard"><img src="assets/logos/mark-cream.png" alt="" width="26" height="26"><span>cybagard</span></a>
+      <a class="cg-brand" href="https://github.com/cybagard"><img src="assets/cybagard/logos/mark-cream.png" alt="" width="26" height="26"><span>cybagard</span></a>
       <span>MIT License · Frameworks: <a href="https://owasp.org/">OWASP</a> · <a href="https://github.com/cybagard/cyba-dojo">cybagard/cyba-dojo</a> · Use only in a lab.</span>
     </div>
   </footer>

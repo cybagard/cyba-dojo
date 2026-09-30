@@ -1,4 +1,4 @@
-/* cybagard tokens. Fonts: https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap */
+/* cybagard tokens 2.0.0. Load fonts.css first, then this file, then components/cybagard.css. */
 :root {
   --ink: #000000;
   --cream: #fefef6;

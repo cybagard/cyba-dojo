@@ -88,12 +88,12 @@
           <div class="cg-flow__arrow" aria-hidden="true">→</div>
           <div class="cg-outcomes">
             <div class="cg-outcome cg-outcome--muted">
-              <span class="cg-pill cg-pill--off">complete</span><b>The next act opens.</b>
-              <p>You found the weakness. The storyline moves to the next part of the campus.</p>
+              <span class="cg-pill cg-pill--off">mark done</span><b>The next act opens.</b>
+              <p>When you find the weakness, click <cite>Mark done</cite>. The console does not check your attack. It trusts you.</p>
             </div>
             <div class="cg-outcome cg-outcome--gold">
               <span class="cg-pill cg-pill--on">defend</span><b>Name the control.</b>
-              <p>Each act ends with one question: which control must stop this attack?</p>
+              <p>After you mark an act done, the console asks you to name the control that stops the attack. Answer first. Then open the control and compare.</p>
             </div>
           </div>
         </div>
@@ -121,12 +121,12 @@
           <article class="cg-card cg-card--accent-top">
             <span class="cg-card__num">03</span>
             <h3 class="cg-h3">A storyline with seven acts</h3>
-            <p>The acts go from reconnaissance to superadmin. Each act has a hint. Thus you always know where to start.</p>
+            <p>The acts go from reconnaissance to superadmin. Each act has a hint and a Defend step. Thus you always know where to start.</p>
           </article>
           <article class="cg-card cg-card--accent-top">
             <span class="cg-card__num">04</span>
             <h3 class="cg-h3">A test for each weakness</h3>
-            <p>An end-to-end test suite does all the acts. It makes sure that each weakness operates as the map shows.</p>
+            <p>An end-to-end test suite does all the acts. Each of the 34 weaknesses has a test that makes sure it operates as the map shows.</p>
           </article>
         </div>
       </div>
@@ -145,7 +145,7 @@
           </ul>
         </div>
         <div class="cg-term" role="region" aria-label="Example entry from the vulnerability map">
-          <div class="cg-term__bar"><i></i><i></i><i></i><span>docs/VULN_MAP.md · BAC-2</span></div>
+          <div class="cg-term__bar"><i></i><i></i><i></i><span>BAC-2 · from VULN_MAP.md and STORYLINE.md</span></div>
 <pre>{
   <span class="k">"id"</span>:       <span class="hl">"BAC-2"</span>,
   <span class="k">"domain"</span>:   <span class="s">"Registrar"</span>,
@@ -153,11 +153,12 @@
   <span class="k">"location"</span>: <span class="s">"src/routes/registrar.js"</span>,
   <span class="k">"route"</span>:    <span class="s">"GET /api/v1/registrar/transcript/:studentId"</span>,
   <span class="k">"class"</span>:    <span class="s">"BOLA, no ownership check"</span>,
-  <span class="k">"gives"</span>:    <span class="s">"The transcript of each student"</span>,
+  <span class="k">"gives"</span>:    <span class="s">"Any student's transcript"</span>,
   <span class="k">"owasp"</span>:    [<span class="s">"A01"</span>, <span class="s">"API1"</span>],
-  <span class="k">"act"</span>:      <span class="s">2</span>
+  <span class="k">"act"</span>:      <span class="s">"2 · Read the class"</span>,
+  <span class="k">"defend"</span>:   <span class="s">"An ownership check on every object id"</span>
 }
-<span class="c"># The map does not include a payload.</span></pre>
+<span class="c"># A summary of the docs. The docs do not include a payload.</span></pre>
         </div>
       </div>
     </section>
@@ -185,8 +186,8 @@
                 <h3 class="cg-h3">Go into the campus</h3>
                 <p>Find the attack surface. Then open a student session.</p>
                 <ul class="cg-layer__list">
-                  <li><b>ACT 0</b>Examine the campus: reconnaissance and information disclosure.</li>
-                  <li><b>ACT 1</b>Sign in: authentication weaknesses.</li>
+                  <li><b>ACT 0</b><cite>Case the campus</cite>: reconnaissance and information disclosure.</li>
+                  <li><b>ACT 1</b><cite>Get a foothold</cite>: authentication weaknesses.</li>
                 </ul>
               </div>
             </div>
@@ -196,9 +197,9 @@
                 <h3 class="cg-h3">Increase your access</h3>
                 <p>Read the data of other students. Change your role. Then use the staff functions.</p>
                 <ul class="cg-layer__list">
-                  <li><b>ACT 2</b>Read the class: broken object level authorization.</li>
-                  <li><b>ACT 3</b>Change your identity: mass assignment.</li>
-                  <li><b>ACT 4</b>Change the record: broken function level authorization.</li>
+                  <li><b>ACT 2</b><cite>Read the class</cite>: broken object level authorization.</li>
+                  <li><b>ACT 3</b><cite>Change who you are</cite>: mass assignment.</li>
+                  <li><b>ACT 4</b><cite>Rewrite the record</cite>: broken function level authorization.</li>
                 </ul>
               </div>
             </div>
@@ -208,8 +209,8 @@
                 <h3 class="cg-h3">Control the center</h3>
                 <p>Attack campus security. Send requests to internal services. Then find why no alarm occurred.</p>
                 <ul class="cg-layer__list">
-                  <li><b>ACT 5</b>Attack campus security: NoSQL injection and broken cryptography.</li>
-                  <li><b>ACT 6</b>Go inside and stay hidden: SSRF and missing logs.</li>
+                  <li><b>ACT 5</b><cite>Breach campus security</cite>: NoSQL injection and broken cryptography.</li>
+                  <li><b>ACT 6</b><cite>Reach inside &amp; go quiet</cite>: SSRF and missing logs.</li>
                 </ul>
               </div>
             </div>
@@ -320,23 +321,33 @@ cd cyba-dojo</pre></div>
         <div class="cg-sec-head">
           <span class="cg-eyebrow">API · /api/v1</span>
           <h2 class="cg-h2">Eight campus areas.</h2>
-          <p>Each area has a datastore and weaknesses. <code>/apidoc</code> shows the published routes. Some routes are not in the list. Find them.</p>
+          <p>The areas come from the domain table in <code>docs/VULN_MAP.md</code>. All paths start with <code>/api/v1</code>, except the Operations routes in the first card. <code>/apidoc</code> shows the published routes. Some routes are not in the list. Find them.</p>
         </div>
         <div class="cg-grid cg-g4">
           <div class="cg-card">
-            <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/students/login</code></div>
-            <p>Student identity and profiles. You start here.</p>
-            <div class="cg-status-row"><span class="cg-pill cg-pill--on">SQLite</span><span class="cg-pill cg-pill--off">Act 1</span></div>
+            <div class="cg-ep"><span class="cg-verb">GET</span><code>/status</code></div>
+            <p>Service status and diagnostics, at the root. <code>/debug</code> and the legacy <code>/api/v0</code> are also here.</p>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">Mixed</span><span class="cg-pill cg-pill--off">Act 0</span></div>
           </div>
           <div class="cg-card">
-            <div class="cg-ep"><span class="cg-verb cg-verb--write">PATCH</span><code>/me</code></div>
-            <p>Your profile, avatar and timetable import.</p>
-            <div class="cg-status-row"><span class="cg-pill cg-pill--on">SQLite</span><span class="cg-pill cg-pill--off">Acts 3, 6</span></div>
+            <div class="cg-ep"><span class="cg-verb cg-verb--write">POST</span><code>/students/login</code></div>
+            <p>Student identity. <code>PATCH /me</code> is Act 3. The import routes under <code>/me</code> are Act 6.</p>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">SQLite</span><span class="cg-pill cg-pill--off">Acts 1, 3, 6</span></div>
           </div>
           <div class="cg-card">
             <div class="cg-ep"><span class="cg-verb">GET</span><code>/registrar/transcript/:studentId</code></div>
-            <p>Transcripts, enrollment and grades.</p>
+            <p>Transcripts, enrollment and grades. <code>POST /registrar/grade</code> is Act 4.</p>
             <div class="cg-status-row"><span class="cg-pill cg-pill--on">PostgreSQL</span><span class="cg-pill cg-pill--off">Acts 2, 4</span></div>
+          </div>
+          <div class="cg-card">
+            <div class="cg-ep"><span class="cg-verb cg-verb--write">POST</span><code>/campus/security/login</code></div>
+            <p>Sign-in for the campus security superadmins.</p>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">MongoDB</span><span class="cg-pill cg-pill--off">Act 5</span></div>
+          </div>
+          <div class="cg-card">
+            <div class="cg-ep"><span class="cg-verb cg-verb--write">POST</span><code>/sso/token</code></div>
+            <p>Campus single sign-on with a custom token format. <code>GET /sso/admin/roster</code> is also Act 5.</p>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">Stateless</span><span class="cg-pill cg-pill--off">Act 5</span></div>
           </div>
           <div class="cg-card">
             <div class="cg-ep"><span class="cg-verb">GET</span><code>/library/list/book/:id</code></div>
@@ -344,24 +355,14 @@ cd cyba-dojo</pre></div>
             <div class="cg-status-row"><span class="cg-pill cg-pill--on">PostgreSQL</span><span class="cg-pill cg-pill--off">Reference</span></div>
           </div>
           <div class="cg-card">
-            <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/lending/login</code></div>
-            <p>Sign-in for the library staff.</p>
-            <div class="cg-status-row"><span class="cg-pill cg-pill--on">MySQL</span></div>
+            <div class="cg-ep"><span class="cg-verb cg-verb--write">POST</span><code>/lending/login</code></div>
+            <p>Sign-in for the library staff. It is not in the storyline. Use it for practice.</p>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">MySQL</span><span class="cg-pill cg-pill--off">Practice</span></div>
           </div>
           <div class="cg-card">
-            <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/campus/security/login</code></div>
-            <p>Sign-in for the campus security superadmins.</p>
-            <div class="cg-status-row"><span class="cg-pill cg-pill--on">MongoDB</span><span class="cg-pill cg-pill--off">Act 5</span></div>
-          </div>
-          <div class="cg-card">
-            <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/sso/token</code></div>
-            <p>Campus single sign-on. The token format is custom.</p>
-            <div class="cg-status-row"><span class="cg-pill cg-pill--on">Stateless</span><span class="cg-pill cg-pill--off">Act 5</span></div>
-          </div>
-          <div class="cg-card">
-            <div class="cg-ep"><span class="cg-verb cg-verb--post">POST</span><code>/courses/announcements</code></div>
-            <p>Course materials, file uploads and announcements.</p>
-            <div class="cg-status-row"><span class="cg-pill cg-pill--on">SQLite + files</span></div>
+            <div class="cg-ep"><span class="cg-verb cg-verb--write">POST</span><code>/courses/announcements</code></div>
+            <p>Course materials, file uploads and announcements. Mini-chain C uses them.</p>
+            <div class="cg-status-row"><span class="cg-pill cg-pill--on">SQLite + files</span><span class="cg-pill cg-pill--off">Chain C</span></div>
           </div>
         </div>
       </div>

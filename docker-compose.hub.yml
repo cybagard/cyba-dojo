@@ -1,0 +1,27 @@
+services:
+  vulnweb:
+    image: cybagard/cyba-dojo:latest
+    depends_on:
+      - postgres
+      - mysql
+      - mongo
+    environment:
+      PGUSER: bookuser
+      PGHOST: postgres
+      PGDATABASE: books
+      PGPORT: 5432
+      MYSQL_PASSWORD: root
+      MONGO_HOST: mongo
+      MONGO_DB: campussecurity
+      MONGO_COLLECTION: superadmins
+      PORT: "3000"
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: bookuser
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: books
+  mysql:
+    image: mysql:8.0
+  mongo:
+    image: mongo:latest

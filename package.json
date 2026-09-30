@@ -1,0 +1,45 @@
+{
+  "name": "cyba-dojo",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cyba Dojo - an intentionally vulnerable university-themed API + portal for hands-on security learning.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node ./src/server.js",
+    "dev": "node --watch ./src/server.js",
+    "lint": "eslint .",
+    "apidoc": "apidoc -i src/routes -o public/apidoc",
+    "test": "bash test/run-e2e.sh",
+    "test:e2e": "bash test/run-e2e.sh",
+    "test:api": "node --test test/api.e2e.test.js",
+    "test:ui": "playwright test"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.0.1",
+    "express-session": "^1.18.1",
+    "marked": "0.3.6",
+    "mongodb": "^6.13.0",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.0",
+    "mysql2": "^3.12.0",
+    "pg": "^8.13.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.50.0",
+    "apidoc": "^1.2.0",
+    "eslint": "^9.18.0"
+  },
+  "apidoc": {
+    "title": "Cyba Dojo API",
+    "url": "http://localhost:3000/api/v1"
+  }
+}

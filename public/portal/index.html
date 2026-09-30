@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cybagard University — Campus Portal</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="dot"></span>
+      <div>Cybagard University <small>· Campus Portal</small></div>
+    </div>
+    <div class="chips">
+      <span id="progress-chip" class="session-chip progress-chip hidden"></span>
+      <div id="session" class="session-chip">Not signed in</div>
+    </div>
+  </header>
+
+  <main>
+    <!-- LOGIN / MISSION BRIEFING (Act 0 entrypoint) -->
+    <section id="view-login" class="landing">
+      <div class="card briefing">
+        <span class="badge">⚠ Intentionally vulnerable · authorised learning only</span>
+        <h1 class="mission-title">The Semester Heist</h1>
+        <p class="mission-lede">
+          Your goal: go from <b>anonymous visitor</b> to <b>campus superadmin</b>.
+          You can't skip floors — each act unlocks the next.
+        </p>
+
+        <h3 class="brief-h">Act 0 · Recon — start here</h3>
+        <p class="hint">Case the campus before you touch anything sensitive. What do these leak?</p>
+        <div class="recon-links">
+          <a href="/apidoc" target="_blank">API reference ↗</a>
+          <a href="/status" target="_blank">Service status ↗</a>
+          <a href="/debug" target="_blank">Diagnostics ↗</a>
+          <a href="/api/v0/students/1" target="_blank">Legacy API ↗</a>
+        </div>
+
+        <h3 class="brief-h">The path</h3>
+        <ol class="acts">
+          <li><b>Recon</b> — map the surface (you're here)</li>
+          <li><b>Foothold</b> — get a student session (→ sign in)</li>
+          <li><b>Peers</b> — read other students' records</li>
+          <li><b>Promotion</b> — elevate your own account</li>
+          <li><b>Faculty powers</b> — reach staff-only functions</li>
+          <li><b>Campus core</b> — breach campus security</li>
+          <li><b>Takeover</b> — reach internal surfaces &amp; go quiet</li>
+        </ol>
+
+        <div class="brief-docs">
+          <a href="/docs/STORYLINE.md" target="_blank">📖 Full walkthrough</a>
+          <a href="/docs/VULN_MAP.md" target="_blank">🗺 Weakness map</a>
+          <a href="/docs/OWASP_COVERAGE.md" target="_blank">✅ OWASP coverage</a>
+        </div>
+      </div>
+
+      <div class="card login-card">
+        <h2>Act 1 · Sign in</h2>
+        <p class="hint">The seeded student account below gets you a foothold. What else might this form accept?</p>
+        <label>Username</label>
+        <input id="login-user" value="student1" placeholder="student1" />
+        <label>Password</label>
+        <input id="login-pass" type="password" value="student1" placeholder="••••••••" />
+        <button class="btn" onclick="doLogin()">Sign in</button>
+        <pre class="out hidden" id="login-out"></pre>
+        <p class="hint seeded">Seeded roles: <code>student1</code> / <code>student2</code> (students) · <code>prof_lang</code> (faculty). Passwords = usernames, except faculty.</p>
+      </div>
+    </section>
+
+    <!-- APP -->
+    <section id="view-app" class="hidden">
+      <div class="tabs" id="tabs"></div>
+
+      <!-- Mission Console (guided, self-paced storyline) -->
+      <div class="tab-panel" data-tab="mission">
+        <div id="mission"></div>
+      </div>
+
+      <!-- Profile -->
+      <div class="tab-panel hidden" data-tab="profile">
+        <div class="grid">
+          <div class="card">
+            <h2>My profile</h2>
+            <p class="hint">Your student record.</p>
+            <button class="btn ghost" onclick="loadProfile()">Refresh</button>
+            <pre class="out" id="profile-out">—</pre>
+          </div>
+          <div class="card">
+            <h2>Edit profile</h2>
+            <p class="hint">Send a JSON patch of the fields you want to change.</p>
+            <label>Patch (JSON)</label>
+            <textarea id="profile-patch">{ "full_name": "Sam Turner", "email": "sam@campus.edu" }</textarea>
+            <button class="btn" onclick="patchProfile()">Save changes</button>
+            <pre class="out hidden" id="patch-out"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registrar -->
+      <div class="tab-panel hidden" data-tab="registrar">
+        <div class="grid">
+          <div class="card">
+            <h2>Transcript</h2>
+            <p class="hint">Look up an academic transcript by student id.</p>
+            <label>Student id</label>
+            <input id="tr-id" value="1" />
+            <button class="btn" onclick="loadTranscript()">View transcript</button>
+            <div id="tr-table"></div>
+          </div>
+          <div class="card">
+            <h2>Enroll in a course</h2>
+            <label>Student id</label>
+            <input id="en-id" value="1" />
+            <label>Course</label>
+            <input id="en-course" value="CS499 Capstone" />
+            <label>Term</label>
+            <input id="en-term" value="2025-FALL" />
+            <button class="btn" onclick="enroll()">Enroll</button>
+            <pre class="out hidden" id="en-out"></pre>
+          </div>
+          <div class="card">
+            <h2>Faculty · set grade</h2>
+            <p class="hint">Update the grade on a transcript entry.</p>
+            <label>Transcript id</label>
+            <input id="gr-id" value="1" />
+            <label>Grade</label>
+            <input id="gr-grade" value="A" />
+            <button class="btn" onclick="setGrade()">Save grade</button>
+            <pre class="out hidden" id="gr-out"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courses -->
+      <div class="tab-panel hidden" data-tab="courses">
+        <div class="grid">
+          <div class="card">
+            <h2>Announcements</h2>
+            <p class="hint">Course announcements from faculty.</p>
+            <button class="btn ghost" onclick="loadAnnouncements()">Refresh</button>
+            <div id="ann-list"></div>
+            <label>Post an announcement (markdown)</label>
+            <textarea id="ann-body">See you all in **CS210** on Monday.</textarea>
+            <button class="btn" onclick="postAnnouncement()">Post</button>
+          </div>
+          <div class="card">
+            <h2>Course materials</h2>
+            <p class="hint">Upload a file. An optional checksum can be supplied.</p>
+            <label>File</label>
+            <input id="mat-file" type="file" />
+            <label>Checksum (optional)</label>
+            <input id="mat-sum" placeholder="sha256..." />
+            <button class="btn" onclick="uploadMaterial()">Upload</button>
+            <button class="btn ghost" onclick="loadMaterials()">List materials</button>
+            <div id="mat-table"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tools -->
+      <div class="tab-panel hidden" data-tab="tools">
+        <div class="grid">
+          <div class="card">
+            <h2>Import avatar</h2>
+            <p class="hint">Fetch a profile picture from a URL.</p>
+            <label>Image URL</label>
+            <input id="av-url" placeholder="https://example.com/me.png" />
+            <button class="btn" onclick="importAvatar()">Fetch &amp; save</button>
+            <pre class="out hidden" id="av-out"></pre>
+          </div>
+          <div class="card">
+            <h2>Import timetable</h2>
+            <p class="hint">Sync your timetable from a third-party feed.</p>
+            <label>Feed URL</label>
+            <input id="tt-url" placeholder="https://timetables.example.edu/feed.json" />
+            <button class="btn" onclick="importTimetable()">Import</button>
+            <pre class="out hidden" id="tt-out"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campus -->
+      <div class="tab-panel hidden" data-tab="campus">
+        <div class="grid">
+          <div class="card">
+            <h2>Campus security login</h2>
+            <p class="hint">Restricted to campus security staff.</p>
+            <label>Username</label>
+            <input id="cs-user" placeholder="Superadmin" />
+            <label>Password</label>
+            <input id="cs-pass" type="password" />
+            <button class="btn" onclick="campusLogin()">Sign in</button>
+            <pre class="out hidden" id="cs-out"></pre>
+          </div>
+          <div class="card">
+            <h2>Campus SSO token</h2>
+            <p class="hint">Exchange credentials for a campus token, then inspect it.</p>
+            <div class="row">
+              <input id="sso-user" placeholder="username" />
+              <input id="sso-pass" type="password" placeholder="password" />
+            </div>
+            <button class="btn" onclick="ssoToken()">Get token</button>
+            <label>Token</label>
+            <textarea id="sso-token"></textarea>
+            <div class="row">
+              <button class="btn ghost" onclick="ssoWhoami()">whoami</button>
+              <button class="btn ghost" onclick="ssoRoster()">admin roster</button>
+            </div>
+            <pre class="out hidden" id="sso-out"></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      Cyba Dojo — an intentionally vulnerable learning environment.
+      See <a href="/apidoc" target="_blank">/apidoc</a> for the API reference.
+    </p>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+services:
+  kali:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.Kali
+    stdin_open: true
+    tty: true

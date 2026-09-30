@@ -1,0 +1,9 @@
+services:
+  waf:
+    image: owasp/modsecurity-crs:latest
+    ports:
+      - "8080:80"
+    environment:
+      PARANOIA: 1
+      PROXY: 1
+      PROXYLOCATION: "http://cyba-dojo-vulnweb-1:3000/"

@@ -1,0 +1,13 @@
+FROM kalilinux/kali-rolling:latest
+
+RUN apt clean && \
+    apt update -y && \
+    apt install -y software-properties-common
+
+RUN apt install -y curl less git build-essential wget python3-pip net-tools \
+dnsutils iputils-ping sqlmap
+
+RUN apt-get autoremove -y && \
+    apt-get clean
+
+ENTRYPOINT "/bin/bash"

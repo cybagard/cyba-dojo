@@ -55,7 +55,7 @@ Legend: ✅ represented · ➖ represented indirectly / by design choice.
 ## Validation status
 
 Every weakness id above is exercised by the automated E2E suite (`npm test`),
-which boots all four datastores under `docker-compose` and asserts each one's
+which boots all four datastores under Docker Compose and asserts each one's
 documented behaviour at runtime:
 
 - **API walkthrough** (`test/api.e2e.test.js`) — the seven storyline acts plus a

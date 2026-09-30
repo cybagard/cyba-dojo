@@ -11,7 +11,7 @@ export PGHOST=localhost
 export MYSQL_HOST=localhost
 export MONGO_HOST=localhost
 
-COMPOSE="docker compose -f docker-compose.test.yml"
+COMPOSE="docker compose -f compose.test.yaml"
 
 cleanup() {
   echo "==> tearing down datastore stack"
@@ -23,9 +23,9 @@ echo "==> starting datastore stack (postgres, mysql, mongo)"
 $COMPOSE up -d
 
 echo "==> waiting for datastores to become ready"
-ready_pg()    { docker compose -f docker-compose.test.yml exec -T postgres pg_isready -U bookuser >/dev/null 2>&1; }
-ready_mysql() { docker compose -f docker-compose.test.yml exec -T mysql mysqladmin ping -uroot -proot 2>/dev/null | grep -q alive; }
-ready_mongo() { docker compose -f docker-compose.test.yml exec -T mongo mongosh --quiet --eval 'db.runCommand({ping:1}).ok' 2>/dev/null | grep -q 1; }
+ready_pg()    { docker compose -f compose.test.yaml exec -T postgres pg_isready -U bookuser >/dev/null 2>&1; }
+ready_mysql() { docker compose -f compose.test.yaml exec -T mysql mysqladmin ping -uroot -proot 2>/dev/null | grep -q alive; }
+ready_mongo() { docker compose -f compose.test.yaml exec -T mongo mongosh --quiet --eval 'db.runCommand({ping:1}).ok' 2>/dev/null | grep -q 1; }
 
 wait_for() {
   local name="$1"; local fn="$2"; local tries=60

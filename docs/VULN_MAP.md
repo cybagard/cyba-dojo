@@ -104,7 +104,7 @@ Demo identities (also seeded into the stores):
 | CFG-2 | App | `src/app.js` → error handler | Verbose errors: `message` + `stack` returned to client | Internal detail disclosure |
 | CFG-3 | Operations | `src/routes/legacy.js` → `GET /status` | Runtime + full config (incl. `sessionSecret`, `campusTokenSecret`, DB creds) disclosed | Secret disclosure |
 | CFG-4 | Operations | `src/routes/legacy.js` → `GET /debug` | Request headers, session, cookies, and full `process.env` echoed | Secret / state disclosure |
-| CFG-5 | Infra | `docker-compose.yml` / `docker-compose.dev.yml` / `config/mysql/my.cnf` | Postgres `trust` auth, MySQL `root/root` with empty `secure-file-priv` (file read/write), Mongo unauthenticated, debug port `9229` exposed | Weak service posture; MySQL file primitives amplify INJ-3 |
+| CFG-5 | Infra | `compose.datastores.yaml` / `compose.override.yaml` / `config/mysql/my.cnf` | Postgres `trust` auth, MySQL `root/root` with empty `secure-file-priv` (file read/write), Mongo unauthenticated, debug port `9229` exposed | Weak service posture; MySQL file primitives amplify INJ-3 |
 
 ---
 

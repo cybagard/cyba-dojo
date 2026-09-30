@@ -39,8 +39,12 @@ You'll need [Docker](https://docs.docker.com/get-docker/) with Compose. Then bri
 whole campus — the app plus PostgreSQL, MySQL and MongoDB — in one command:
 
 ```shell
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+docker compose up -d --build
 ```
+
+On a workstation shell that auto-merges `compose.override.yaml`, you get a live-reload
+development server by default. For the plain production-style build, use
+`CI=1 docker compose up -d --build`.
 
 Now open http://localhost:3000/ and you're on the portal. The API lives under
 `/api/v1`, and the auto-generated API reference is at `/apidoc`.
@@ -138,7 +142,7 @@ npm test
 The API walkthrough (`npm run test:api`) checks every weakness against the real backend;
 the UI suite (`npm run test:ui`) drives the Mission Console and runs real vulnerabilities
 through an actual browser, including a stored cross-site scripting that genuinely
-executes. Both need the datastores from `docker-compose.test.yml`.
+executes. Both need the datastores from `compose.test.yaml`.
 
 ## Can I use this to teach a class or run a CTF?
 
@@ -151,18 +155,13 @@ found and *where*, without ever publishing a payload.
 You can drop a Kali Linux container onto the same network:
 
 ```shell
-docker compose -f docker-compose.yml \
-               -f docker-compose.dev.yml \
-               -f docker-compose.kali.yml up -d --build
+docker compose --profile attacker up -d --build
 ```
 
 Or stand up a ModSecurity WAF in front, to play with detection and evasion concepts:
 
 ```shell
-docker compose -f docker-compose.yml \
-               -f docker-compose.dev.yml \
-               -f docker-compose.mod_security.yml \
-               -f docker-compose.kali.yml up -d --build
+docker compose --profile waf up -d --build
 ```
 
 ## What's next?

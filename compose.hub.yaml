@@ -1,0 +1,34 @@
+# Run the published Docker Hub image instead of building from source:
+#
+#   docker compose -f compose.hub.yaml up -d --pull
+#
+# This is the "try it" path for people who would rather pull than build. compose.yaml
+# builds from source; this one pulls cybagard/cyba-dojo:latest (no `build:` key, so
+# Compose fetches the image). Datastores come from compose.datastores.yaml.
+
+name: cyba-dojo
+
+include:
+  - ./compose.datastores.yaml
+
+services:
+  vulnweb:
+    image: cybagard/cyba-dojo:latest
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PGHOST: postgres
+      PGUSER: bookuser
+      PGDATABASE: books
+      PGPORT: "5432"
+      MYSQL_HOST: mysql
+      MONGO_HOST: mongo
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped

@@ -1,0 +1,36 @@
+# Development layer for the dojo campus.
+#
+# Compose merges this file automatically onto compose.yaml in a non-CI shell, so a
+# local `docker compose up -d --build` gives you a live-reload development server.
+# It is deliberately NOT a standalone project — run the campus, not just this file.
+#
+# Force the plain, non-live-reload production stack (e.g. in CI, or to reproduce
+# exactly what `compose.yaml` alone builds) with:
+#
+#   CI=1 docker compose up -d --build
+#
+# The vulnweb source is bind-mounted and `npm run` is run from an anonymous volume
+# so node_modules never leaks into the checkout. MySQL additionally picks up the
+# file-primitive plant (empty secure-file-priv) for the dev box only.
+
+services:
+  vulnweb:
+    volumes:
+      - .:/work
+      - /work/node_modules
+    ports:
+      - "9229:9229"
+    environment:
+      NODE_ENV: development
+    command: sh -c "npm install && npm run dev"
+
+  mysql:
+    # CFG-5 file read/write primitive: mount an empty secure-file-priv via the repo's
+    # stock entrypoint so INT... OUTFILE / LOAD_FILE() work. Dev-only; the shared
+    # datastore keeps a healthy, non-privileged default.
+    volumes:
+      - "./config/mysql/docker-entrypoint.sh:/docker-entrypoint.sh"
+      - "./config/mysql/my.cnf:/etc/mysql/my.cnf"
+    entrypoint: ["/bin/bash", "/docker-entrypoint.sh", "mysqld"]
+    ports:
+      - "3306:3306"

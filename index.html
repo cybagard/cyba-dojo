@@ -268,7 +268,7 @@
             </div>
           </div>
         </div>
-        <p class="cg-note"><b>Test:</b> <code>npm test</code> starts the four datastores. It makes sure that each id in the tables operates as the map shows.</p>
+        <p class="cg-note"><b>Test:</b> <code>npm test</code> starts the three databases as containers. SQLite runs inside the app. It makes sure that each id in the tables operates as the map shows.</p>
       </div>
     </section>
 
@@ -291,8 +291,8 @@ cd cyba-dojo</pre></div>
           <div class="cg-step">
             <div>
               <h3 class="cg-h3">Start the campus</h3>
-              <p>This command starts the four datastores. The full storyline uses all four.</p>
-              <div class="cg-term"><pre>docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build</pre></div>
+              <p>This command starts the app and the three databases as containers. SQLite runs inside the app. Thus the full storyline uses all four.</p>
+              <div class="cg-term"><pre>docker compose up -d --build</pre></div>
             </div>
           </div>
           <div class="cg-step">
@@ -307,9 +307,8 @@ cd cyba-dojo</pre></div>
           <div class="cg-step">
             <div>
               <h3 class="cg-h3">Add an attack computer or a WAF (optional)</h3>
-              <p>These Compose files add a Kali Linux container and a ModSecurity WAF. They use the same network.</p>
-              <div class="cg-term"><pre>docker compose -f docker-compose.yml -f docker-compose.dev.yml \
-  -f docker-compose.mod_security.yml -f docker-compose.kali.yml up -d --build</pre></div>
+              <p>A Kali attacker box and a ModSecurity WAF are optional profiles in front of the app. They join the same network.</p>
+              <div class="cg-term"><pre>docker compose --profile attacker --profile waf up -d --build</pre></div>
             </div>
           </div>
         </div>

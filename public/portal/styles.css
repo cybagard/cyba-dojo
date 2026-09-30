@@ -99,10 +99,13 @@ pre.out {
   font: 13px/1.6 var(--font-mono);
 }
 .card table { width: 100%; margin-top: var(--space-4); border-collapse: collapse; font-size: 15px; }
-.card th, .card td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
-.card th { font: 600 12px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-muted); }
+.card th, .card td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); overflow-wrap: break-word; }
+.card th { font: 600 12px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-muted); white-space: nowrap; }
+.card td:not(:nth-child(3)) { white-space: nowrap; }
 .card td a { color: var(--accent); }
 #tr-table, #mat-table { overflow-x: auto; }
+/* A card that shows a result table takes the full row, so the columns have room. */
+.grid > .card:has(#tr-table table), .grid > .card:has(#mat-table table) { grid-column: 1 / -1; }
 
 .announcement { margin-top: var(--space-3); padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-alt); }
 .announcement .who { margin-bottom: var(--space-1); font: 600 12px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }

@@ -1,33 +1,43 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cybagard University — Campus Portal</title>
+  <title>Campus Portal · cyba-dojo</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" type="image/png" href="assets/cybagard/logos/favicon.png" />
+  <link rel="stylesheet" href="assets/cybagard/fonts.css" />
+  <link rel="stylesheet" href="assets/cybagard/tokens.css" />
+  <link rel="stylesheet" href="assets/cybagard/cybagard.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="dot"></span>
-      <div>Cybagard University <small>· Campus Portal</small></div>
-    </div>
-    <div class="chips">
-      <span id="progress-chip" class="session-chip progress-chip hidden"></span>
-      <div id="session" class="session-chip">Not signed in</div>
+<body class="cg-root">
+  <header class="cg-nav topbar">
+    <div class="cg-wrap">
+      <a class="cg-brand" href="/">
+        <img src="assets/cybagard/logos/mark-cream.png" alt="" width="30" height="30" />
+        <span>Campus Portal</span>
+        <small>cyba-dojo</small>
+      </a>
+      <div class="chips">
+        <span id="progress-chip" class="session-chip progress-chip hidden"></span>
+        <div id="session" class="session-chip">Not signed in</div>
+      </div>
     </div>
   </header>
 
-  <main>
+  <main class="cg-wrap portal">
     <!-- LOGIN / MISSION BRIEFING (Act 0 entrypoint) -->
     <section id="view-login" class="landing">
       <div class="card briefing">
-        <span class="badge">⚠ Intentionally vulnerable · authorised learning only</span>
+        <span class="cg-eyebrow">Cybagard University · Guided path</span>
         <h1 class="mission-title">The Semester Heist</h1>
         <p class="mission-lede">
           Your goal: go from <b>anonymous visitor</b> to <b>campus superadmin</b>.
           You can't skip floors — each act unlocks the next.
         </p>
+
+        <p class="cg-callout"><b>CAUTION</b>This portal has intentional weaknesses. Use it only for authorised learning.</p>
 
         <h3 class="brief-h">Act 0 · Case the campus — start here</h3>
         <p class="hint">Case the campus before you touch anything sensitive. What do these leak?</p>
@@ -50,14 +60,15 @@
         </ol>
 
         <div class="brief-docs">
-          <a href="/docs/STORYLINE.md" target="_blank">📖 Full walkthrough</a>
-          <a href="/docs/VULN_MAP.md" target="_blank">🗺 Weakness map</a>
-          <a href="/docs/OWASP_COVERAGE.md" target="_blank">✅ OWASP coverage</a>
+          <a href="/docs/STORYLINE.md" target="_blank">Full walkthrough →</a>
+          <a href="/docs/VULN_MAP.md" target="_blank">Weakness map →</a>
+          <a href="/docs/OWASP_COVERAGE.md" target="_blank">OWASP coverage →</a>
         </div>
       </div>
 
       <div class="card login-card">
-        <h2>Act 1 · Sign in</h2>
+        <span class="cg-eyebrow">Act 1 · Get a foothold</span>
+        <h2>Sign in</h2>
         <p class="hint">The seeded student account below gets you a foothold. What else might this form accept?</p>
         <label>Username</label>
         <input id="login-user" value="student1" placeholder="student1" />
@@ -214,11 +225,14 @@
       </div>
     </section>
 
-    <p class="footer-note">
-      Cyba Dojo — an intentionally vulnerable learning environment.
-      See <a href="/apidoc" target="_blank">/apidoc</a> for the API reference.
-    </p>
   </main>
+
+  <footer class="cg-footer">
+    <div class="cg-wrap">
+      <a class="cg-brand" href="/"><img src="assets/cybagard/logos/mark-cream.png" alt="" width="26" height="26" /><span>cyba-dojo</span></a>
+      <span>An intentionally vulnerable learning environment · <a href="/apidoc" target="_blank">API reference</a> · Keep it in the lab.</span>
+    </div>
+  </footer>
 
   <script src="app.js"></script>
 </body>

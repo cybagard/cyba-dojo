@@ -218,7 +218,7 @@ function renderMission() {
   ACTS.forEach((act, i) => {
     const status = actStatus(i);
     const num = i;
-    const badge = status === 'done' ? '✓' : (status === 'locked' ? '🔒' : num);
+    const badge = status === 'done' ? '✓' : num;
 
     html += `<div class="step ${status}">
       <div class="step-marker">${badge}</div>
@@ -260,7 +260,7 @@ function renderMission() {
 
   html += '</div>';
   if (doneUpTo >= total - 1) {
-    html += `<div class="mission-done">🎓 You walked the whole campus. Now flip it: each act above names the control that should have stopped you. Compare them with your own answers and the <a href="/docs/VULN_MAP.md" target="_blank">weakness map</a>.</div>`;
+    html += `<div class="mission-done">You walked the whole campus. Now flip it: each act above names the control that should have stopped you. Compare them with your own answers and the <a href="/docs/VULN_MAP.md" target="_blank">weakness map</a>.</div>`;
   }
   el.innerHTML = html;
 }

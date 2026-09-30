@@ -56,11 +56,11 @@ test.describe('Mission Console — the self-paced storyline in the UI', () => {
     const done = page.locator('#mission .step.done');
     await expect(done).toHaveCount(2);
     const defend = done.nth(1).locator('.step-defend');
-    await expect(defend).toContainText('which control should have stopped you?');
+    await expect(defend).toContainText('which control stops this attack?');
     const control = defend.locator('details p');
     await expect(control).toBeHidden();
     await defend.locator('summary').click();
-    await expect(control).toContainText('Parameterised queries');
+    await expect(control).toContainText('Use parameterised queries');
     // Active and locked acts do not show the answer yet.
     await expect(page.locator('#mission .step.active .step-defend')).toHaveCount(0);
     await expect(page.locator('#mission .step.locked .step-defend')).toHaveCount(0);

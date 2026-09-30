@@ -21,52 +21,52 @@ let session = null;
 const ACTS = [
   {
     key: 'recon', title: 'Case the campus', owasp: 'API9 · Misconfiguration',
-    objective: 'Map the API surface before touching anything sensitive. Find what the university exposes that it should not.',
-    look: 'Compare the published API reference with what actually answers. Some routes never made it into the docs, and the operational endpoints say more than they should.',
+    objective: 'Find the API surface before you touch sensitive data. Find the data that the university shows but must not show.',
+    look: 'Compare the published API reference with the routes that answer. Some routes are not in the reference. The operational endpoints show too much data.',
     recon: true,
-    control: 'Keep an inventory of every route and remove or authenticate what is not in it. <code>/status</code>, <code>/debug</code> and <code>/api/v0</code> must not answer in production, and no response may contain configuration or environment values.',
+    control: 'Keep a list of all routes. Remove or protect each route that is not in the list. <code>/status</code>, <code>/debug</code> and <code>/api/v0</code> must not answer in production. No response can contain configuration or environment values.',
   },
   {
     key: 'foothold', title: 'Get a foothold', owasp: 'A03 Injection · API2 Broken Auth',
-    objective: 'Obtain an authenticated student session.',
-    look: 'The sign-in form trusts what you type more than it should. The seeded student1 / student1 account also works if you just want to move on.',
+    objective: 'Open an authenticated student session.',
+    look: 'The sign-in form trusts your input too much. To continue without an attack, use the seeded account student1 / student1.',
     where: 'profile', whereLabel: 'Open Profile',
-    control: 'Parameterised queries on every login, rate limiting and lockout on failed attempts, and salted slow password hashes (bcrypt, scrypt or Argon2) with no default accounts.',
+    control: 'Use parameterised queries for each login. Limit the rate of failed attempts and lock the account after too many. Store passwords as salted, slow hashes (bcrypt, scrypt or Argon2). Remove all default accounts.',
   },
   {
     key: 'peers', title: 'Read the class', owasp: 'API1 · BOLA',
-    objective: "Read another student's records — profile and transcript — not just your own.",
-    look: 'Look at the id in the request. Does the server ever check that the record is actually yours?',
+    objective: 'Read the records of another student: the profile and the transcript.',
+    look: 'Examine the id in the request. Does the server make sure that the record is yours?',
     where: 'registrar', whereLabel: 'Open Registrar',
-    control: 'An ownership check on every object id: compare the owner of the record with the user in the session. Return only the fields the caller needs, never password hashes or keys.',
+    control: 'Do an ownership check on each object id. Compare the owner of the record with the user of the session. Return only the fields that the caller uses. Do not return password hashes or keys.',
   },
   {
     key: 'promotion', title: 'Change who you are', owasp: 'API3 · Mass Assignment',
-    objective: 'Turn your student account into something more privileged.',
-    look: 'The profile editor takes a JSON patch. Which fields does it accept that a student should never control?',
+    objective: 'Give your student account more privileges.',
+    look: 'The profile editor accepts a JSON patch. Which fields does it accept that a student must not control?',
     where: 'profile', whereLabel: 'Open Profile',
-    control: 'An allowlist of the fields a user may change (for example display name and email). Properties such as <code>role</code> and <code>gpa</code> are set only by the server.',
+    control: 'Use an allowlist of the fields that a user can change, for example the name and the email. Only the server sets properties such as <code>role</code> and <code>gpa</code>.',
   },
   {
     key: 'faculty', title: 'Rewrite the record', owasp: 'API5 · BFLA',
-    objective: 'Use a staff-only function: change a grade on a transcript entry.',
-    look: 'This endpoint was built for faculty. Ask whether it checks your role at all before it writes.',
+    objective: 'Use a function for staff only: change the grade of a transcript entry.',
+    look: 'This endpoint is for faculty. Does it examine your role before it writes the grade?',
     where: 'registrar', whereLabel: 'Open Registrar',
-    control: 'A server-side role check on every staff function, plus business rules on the flow itself: valid grade values, the right course and term, and an audit record of who changed what.',
+    control: 'Do a role check on the server for each staff function. Add business rules to the flow: valid grades, the correct course and the correct term. Record each change in an audit trail.',
   },
   {
     key: 'campus', title: 'Breach campus security', owasp: 'A03 NoSQL · A02 Crypto',
-    objective: 'Get into the campus security store, and forge a trusted campus token.',
-    look: "The campus login builds a database query straight from your input. Separately, the token verifier trusts the token's own declared algorithm.",
+    objective: 'Go into the campus security store. Then make a false campus token that the verifier trusts.',
+    look: 'The campus login makes a database query directly from your input. Also, the token verifier trusts the algorithm that the token declares.',
     where: 'campus', whereLabel: 'Open Campus',
-    control: 'Validate input types before building a query (a username is a string, not an object). Verify tokens with a fixed algorithm allowlist that rejects <code>none</code>, a strong secret kept out of responses, and a role check, not just token presence.',
+    control: 'Validate the input types before you make a query. A username is a string, not an object. Verify tokens with a fixed list of algorithms that rejects <code>none</code>. Use a strong secret and do not show it in responses. Check the role, not only the token.',
   },
   {
     key: 'takeover', title: 'Reach inside & go quiet', owasp: 'A10 · SSRF · A09 Logging',
-    objective: 'Make the server fetch something only it can reach — then note why nobody would notice.',
-    look: "The import tools fetch a URL server-side. Where could you point them that your browser can't go directly? Then consider what the logs would (not) show.",
+    objective: 'Make the server fetch a resource that only the server can reach. Then find why nobody saw the attack.',
+    look: 'The import tools fetch a URL on the server. Which addresses can the server reach that your browser cannot reach? Then examine what the logs show and do not show.',
     where: 'tools', whereLabel: 'Open Tools',
-    control: 'An allowlist of hosts the server may fetch from, with internal and link-local addresses blocked. Validate upstream data before use. Log privileged actions to an audit trail with alerts, and keep secrets out of logs.',
+    control: 'Use an allowlist of hosts that the server can fetch from. Block internal and link-local addresses. Validate upstream data before you use it. Record privileged actions in an audit trail with alerts. Do not write secrets to logs.',
   },
 ];
 
@@ -207,7 +207,7 @@ function renderMission() {
     <div class="mission-head">
       <div>
         <h2 class="m-title">The Semester Heist</h2>
-        <p class="hint">A self-paced path from student to campus superadmin. Finish one act to unlock the next — at your own pace.</p>
+        <p class="hint">A path from student to campus superadmin. Complete an act to open the next act. Go at your own speed.</p>
       </div>
       <button class="btn ghost small" onclick="resetProgress()">Reset progress</button>
     </div>
@@ -242,12 +242,12 @@ function renderMission() {
         } else if (act.where) {
           html += `<button class="btn small" onclick="gotoTab('${act.where}')">${act.whereLabel} →</button>`;
         }
-        const nextLabel = i >= total - 1 ? 'Finish mission ✓' : 'Mark done → next act';
+        const nextLabel = i >= total - 1 ? 'Finish the mission ✓' : 'Mark done → next act';
         html += `<button class="btn small solid" onclick="completeUpTo(${i})">${nextLabel}</button>`;
-        html += `<a class="doc-link" href="/docs/STORYLINE.md" target="_blank">walkthrough</a>`;
+        html += `<a class="doc-link" href="/docs/STORYLINE.md" target="_blank">Walkthrough</a>`;
         html += '</div>';
       } else if (status === 'done') {
-        html += `<div class="step-defend"><b>Defend:</b> which control should have stopped you? Answer first, then check.
+        html += `<div class="step-defend"><b>Defend:</b> which control stops this attack? Write your answer first. Then open the control.
           <details><summary>Show the control</summary><p>${act.control}</p></details></div>`;
         if (act.where) {
           html += `<div class="step-actions"><button class="btn small ghost" onclick="gotoTab('${act.where}')">Revisit ${act.whereLabel.replace('Open ', '')} →</button></div>`;
@@ -260,7 +260,7 @@ function renderMission() {
 
   html += '</div>';
   if (doneUpTo >= total - 1) {
-    html += `<div class="mission-done">You walked the whole campus. Now flip it: each act above names the control that should have stopped you. Compare them with your own answers and the <a href="/docs/VULN_MAP.md" target="_blank">weakness map</a>.</div>`;
+    html += `<div class="mission-done">You completed all the acts. Now defend the campus: each act above shows the control that stops the attack. Compare the controls with your answers and with the <a href="/docs/VULN_MAP.md" target="_blank">weakness map</a>.</div>`;
   }
   el.innerHTML = html;
 }

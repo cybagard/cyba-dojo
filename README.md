@@ -6,6 +6,9 @@ It's an intentionally vulnerable web application — a whole fake university cam
 portal — that you break into on purpose, one guided step at a time, to learn web and
 API security.
 
+![The Mission Console: two acts complete with the defending control revealed, and
+Act 2 active with its hint](docs/screenshots/mission-console.png)
+
 ## Why would I want to do that?
 
 Most security tutorials hand you one bug in isolation: here's a SQL injection, here's a

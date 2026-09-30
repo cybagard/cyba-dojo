@@ -18,16 +18,18 @@
 @media (max-width: 640px) { .progress-chip { display: none; } }
 @media (max-width: 420px) { .topbar .cg-brand span { display: none; } }
 
-.portal { padding-block: var(--space-8) var(--space-10); }
+/* Keep the footer at the bottom of short pages. */
+body.cg-root { min-height: 100vh; display: flex; flex-direction: column; }
+.portal { flex: 1 0 auto; width: 100%; padding-block: var(--space-8) var(--space-10); }
 
 /* ---------- cards and text ---------- */
 .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-7); min-width: 0; }
 .card h2 { margin: 0 0 var(--space-1); font-size: 20px; line-height: 1.3; letter-spacing: -.01em; }
 .card .cg-eyebrow + h2 { margin-top: var(--space-3); }
 .hint { color: var(--fg-muted); font-size: 15px; margin: 0 0 var(--space-4); }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-5); }
-.grid > * { min-width: 0; }
-@media (max-width: 420px) { .grid { grid-template-columns: 1fr; } }
+.grid { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+/* Cards share a row and grow to fill it, so no card is left at a fraction of the width. */
+.grid > * { flex: 1 1 320px; min-width: 0; }
 
 /* ---------- landing: briefing (Act 0) + sign-in (Act 1) ---------- */
 .landing { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--space-5); align-items: start; }
@@ -65,6 +67,7 @@ input[type="file"] { padding: 8px; font-size: 14px; }
 textarea { min-height: 96px; resize: vertical; font-family: var(--font-mono); font-size: 13.5px; }
 .row { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 .row > * { flex: 1; min-width: 0; }
+.row > .btn { flex: 0 0 auto; }
 .row input { margin-top: var(--space-2); }
 
 /* ---------- buttons: gold is the primary action, outline is secondary ---------- */
@@ -90,26 +93,34 @@ textarea { min-height: 96px; resize: vertical; font-family: var(--font-mono); fo
   background: transparent; color: var(--fg-muted); font: 500 15px/1.2 var(--font-sans); cursor: pointer;
 }
 .tabs button:hover { color: var(--fg); border-color: var(--gold); }
+.tabs button:focus-visible, .step-defend summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 .tabs button.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 600; }
 
 /* ---------- API output: the terminal look ---------- */
 pre.out {
   margin: var(--space-4) 0 0; padding: 16px 18px; max-height: 340px; overflow: auto;
   background: var(--code-bg); color: var(--code-fg); border: 1px solid var(--term-border); border-radius: var(--radius);
-  font: 13px/1.6 var(--font-mono);
+  font: 13px/1.6 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .card table { width: 100%; margin-top: var(--space-4); border-collapse: collapse; font-size: 15px; }
-.card th, .card td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); overflow-wrap: break-word; }
+.card th, .card td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
 .card th { font: 600 12px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-muted); white-space: nowrap; }
-.card td:not(:nth-child(3)) { white-space: nowrap; }
+.card td:first-child { white-space: nowrap; }
+#mat-table td:nth-child(n+3) { font: 13px/1.5 var(--font-mono); }
 .card td a { color: var(--accent); }
 #tr-table, #mat-table { overflow-x: auto; }
 /* A card that shows a result table takes the full row, so the columns have room. */
-.grid > .card:has(#tr-table table), .grid > .card:has(#mat-table table) { grid-column: 1 / -1; }
+.grid > .card:has(#tr-table table), .grid > .card:has(#mat-table table) { flex-basis: 100%; }
 
 .announcement { margin-top: var(--space-3); padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-alt); }
 .announcement .who { margin-bottom: var(--space-1); font: 600 12px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.announcement { overflow-wrap: anywhere; }
 .announcement p { margin: 0; }
+.announcement :is(h1, h2, h3) { margin: 0 0 var(--space-2); font-size: 18px; }
+.announcement :is(ul, ol) { margin: var(--space-2) 0; padding-left: 22px; }
+.announcement * + p { margin-top: var(--space-2); }
+.announcement img { max-width: 100%; height: auto; }
+.announcement a { color: var(--accent); }
 
 /* ---------- role tags in the session chip ---------- */
 .tag { padding: 2px var(--space-2); border: 1px solid var(--ink-border); border-radius: var(--radius-pill); font: 600 11px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--on-ink-soft); }

@@ -60,10 +60,11 @@ documented behaviour at runtime:
 
 - **API walkthrough** (`test/api.e2e.test.js`) — the seven storyline acts plus a
   dedicated test per remaining id (INJ-2…INJ-5 injections incl. the filter
-  bypass and a UNION login forgery, BAC-4, CRY-1/CRY-2, AUT-1, CFG-1/CFG-2/CFG-5,
-  CMP-1, DSN-2/DSN-3, LOG-2), and the safe-by-contrast parameterised endpoint.
+  bypass and a UNION login forgery, BAC-4, CRY-1/CRY-2/CRY-3, AUT-1,
+  CFG-1/CFG-2/CFG-5, CMP-1, DSN-1/DSN-2/DSN-3, LOG-2), and the safe-by-contrast
+  parameterised endpoint.
 - **UI mission suite** (`test/ui.e2e.spec.js`) — the self-paced Mission Console
-  flow, plus two real vulnerabilities driven through the browser (mass assignment
+  flow (acts 0–6 and the Defend step), plus two real vulnerabilities driven through the browser (mass assignment
   and stored-XSS execution).
 
 The intended offensive technique for each is still left as the exercise; the

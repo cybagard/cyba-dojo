@@ -20,7 +20,7 @@ test.describe('Mission Console — the self-paced storyline in the UI', () => {
     await expect(page.getByRole('link', { name: /Legacy API/ })).toHaveAttribute('href', '/api/v0/students/1');
   });
 
-  test('login opens the mission at Act 3, earlier acts done, later acts locked and un-skippable', async ({ page }) => {
+  test('login opens the mission at Act 2, earlier acts done, later acts locked and un-skippable', async ({ page }) => {
     await login(page);
     const steps = page.locator('#mission .step');
     await expect(steps).toHaveCount(7);
@@ -35,12 +35,12 @@ test.describe('Mission Console — the self-paced storyline in the UI', () => {
     // The active act shows its objective, a "look for" hint, and controls.
     await expect(steps.nth(2).locator('.step-hint')).toBeVisible();
     await expect(steps.nth(2).locator('.btn.solid')).toBeVisible();
-    await expect(page.locator('#progress-chip')).toContainText('Act 3 of 7');
+    await expect(page.locator('#progress-chip')).toContainText('Act 2 · Read the class');
   });
 
   test('completing each act unlocks exactly the next, through to the finish', async ({ page }) => {
     await login(page);
-    for (let n = 3; n <= 7; n++) {
+    for (let n = 2; n <= 6; n++) {
       const active = page.locator('#mission .step.active');
       await expect(active).toContainText(`Act ${n} ·`);
       await active.locator('.btn.solid').click();
@@ -51,20 +51,35 @@ test.describe('Mission Console — the self-paced storyline in the UI', () => {
     await expect(page.locator('#progress-chip')).toContainText('complete');
   });
 
+  test('each completed act asks the defend question and reveals the control on demand', async ({ page }) => {
+    await login(page);
+    const done = page.locator('#mission .step.done');
+    await expect(done).toHaveCount(2);
+    const defend = done.nth(1).locator('.step-defend');
+    await expect(defend).toContainText('which control should have stopped you?');
+    const control = defend.locator('details p');
+    await expect(control).toBeHidden();
+    await defend.locator('summary').click();
+    await expect(control).toContainText('Parameterised queries');
+    // Active and locked acts do not show the answer yet.
+    await expect(page.locator('#mission .step.active .step-defend')).toHaveCount(0);
+    await expect(page.locator('#mission .step.locked .step-defend')).toHaveCount(0);
+  });
+
   test('progress persists across reload and Reset clears it', async ({ page }) => {
     await login(page);
-    // Finish Act 3 -> Act 4 becomes active.
+    // Finish Act 2 -> Act 3 becomes active.
     await page.locator('#mission .step.active .btn.solid').click();
-    await expect(page.locator('#mission .step.active')).toContainText('Act 4 ·');
+    await expect(page.locator('#mission .step.active')).toContainText('Act 3 ·');
 
-    // Reload, then log back in: persisted progress should resume at Act 4.
+    // Reload, then log back in: persisted progress should resume at Act 3.
     await page.reload();
     await login(page);
-    await expect(page.locator('#mission .step.active')).toContainText('Act 4 ·');
+    await expect(page.locator('#mission .step.active')).toContainText('Act 3 ·');
 
     // Reset returns to the start of the path.
     await page.click('button:has-text("Reset progress")');
-    await expect(page.locator('#mission .step.active')).toContainText('Act 1 ·');
+    await expect(page.locator('#mission .step.active')).toContainText('Act 0 ·');
     await expect(page.locator('.progress-label')).toContainText('0 of 7');
   });
 

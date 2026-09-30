@@ -190,6 +190,14 @@ code { background: #0a0e14; border: 1px solid var(--border); border-radius: 5px;
   background: #0d1117; border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 9px 12px;
 }
 .step-hint b { color: var(--accent); }
+.step-defend {
+  margin: 10px 0 0; font-size: 13px; color: var(--text);
+  background: #0d1117; border-left: 3px solid var(--accent-2); border-radius: 0 8px 8px 0; padding: 9px 12px;
+}
+.step-defend b { color: var(--accent-2); }
+.step-defend summary { cursor: pointer; color: var(--muted); margin-top: 6px; }
+.step-defend summary:hover { color: var(--text); }
+.step-defend details p { margin: 6px 0 0; }
 .step-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
 .doc-link { color: var(--muted); font-size: 12.5px; }
 

@@ -13,51 +13,60 @@ const TABS = [
 let session = null;
 
 /* ============================ mission model ============================ */
-// The storyline as a sequential, self-paced path. Each act names its objective,
-// the screen it uses, a conceptual "look for" hint (never a payload), and the
-// OWASP class it teaches. Completing an act unlocks the next.
+// The storyline as a sequential, self-paced path. Acts are numbered 0-6, as in
+// docs/STORYLINE.md. Each act names its objective, the screen it uses, a
+// conceptual "look for" hint (never a payload), the OWASP class it teaches and
+// the defending control. Marking an act done unlocks the next one and asks the
+// learner to name the control that should have stopped them.
 const ACTS = [
   {
     key: 'recon', title: 'Case the campus', owasp: 'API9 · Misconfiguration',
     objective: 'Map the API surface before touching anything sensitive. Find what the university exposes that it should not.',
     look: 'Compare the published API reference with what actually answers. Some routes never made it into the docs, and the operational endpoints say more than they should.',
     recon: true,
+    control: 'Keep an inventory of every route and remove or authenticate what is not in it. <code>/status</code>, <code>/debug</code> and <code>/api/v0</code> must not answer in production, and no response may contain configuration or environment values.',
   },
   {
     key: 'foothold', title: 'Get a foothold', owasp: 'A03 Injection · API2 Broken Auth',
     objective: 'Obtain an authenticated student session.',
     look: 'The sign-in form trusts what you type more than it should. The seeded student1 / student1 account also works if you just want to move on.',
     where: 'profile', whereLabel: 'Open Profile',
+    control: 'Parameterised queries on every login, rate limiting and lockout on failed attempts, and salted slow password hashes (bcrypt, scrypt or Argon2) with no default accounts.',
   },
   {
     key: 'peers', title: 'Read the class', owasp: 'API1 · BOLA',
     objective: "Read another student's records — profile and transcript — not just your own.",
     look: 'Look at the id in the request. Does the server ever check that the record is actually yours?',
     where: 'registrar', whereLabel: 'Open Registrar',
+    control: 'An ownership check on every object id: compare the owner of the record with the user in the session. Return only the fields the caller needs, never password hashes or keys.',
   },
   {
     key: 'promotion', title: 'Change who you are', owasp: 'API3 · Mass Assignment',
     objective: 'Turn your student account into something more privileged.',
     look: 'The profile editor takes a JSON patch. Which fields does it accept that a student should never control?',
     where: 'profile', whereLabel: 'Open Profile',
+    control: 'An allowlist of the fields a user may change (for example display name and email). Properties such as <code>role</code> and <code>gpa</code> are set only by the server.',
   },
   {
     key: 'faculty', title: 'Rewrite the record', owasp: 'API5 · BFLA',
     objective: 'Use a staff-only function: change a grade on a transcript entry.',
     look: 'This endpoint was built for faculty. Ask whether it checks your role at all before it writes.',
     where: 'registrar', whereLabel: 'Open Registrar',
+    control: 'A server-side role check on every staff function, plus business rules on the flow itself: valid grade values, the right course and term, and an audit record of who changed what.',
   },
   {
     key: 'campus', title: 'Breach campus security', owasp: 'A03 NoSQL · A02 Crypto',
     objective: 'Get into the campus security store, and forge a trusted campus token.',
     look: "The campus login builds a database query straight from your input. Separately, the token verifier trusts the token's own declared algorithm.",
     where: 'campus', whereLabel: 'Open Campus',
+    control: 'Validate input types before building a query (a username is a string, not an object). Verify tokens with a fixed algorithm allowlist that rejects <code>none</code>, a strong secret kept out of responses, and a role check, not just token presence.',
   },
   {
     key: 'takeover', title: 'Reach inside & go quiet', owasp: 'A10 · SSRF · A09 Logging',
     objective: 'Make the server fetch something only it can reach — then note why nobody would notice.',
     look: "The import tools fetch a URL server-side. Where could you point them that your browser can't go directly? Then consider what the logs would (not) show.",
     where: 'tools', whereLabel: 'Open Tools',
+    control: 'An allowlist of hosts the server may fetch from, with internal and link-local addresses blocked. Validate upstream data before use. Log privileged actions to an audit trail with alerts, and keep secrets out of logs.',
   },
 ];
 
@@ -147,7 +156,7 @@ function updateProgressChip() {
   const current = Math.min(doneUpTo + 1, ACTS.length - 1);
   const label = doneUpTo >= ACTS.length - 1
     ? 'Mission complete ✓'
-    : `Act ${doneUpTo + 2} of ${ACTS.length}`; // acts are 1-indexed for the learner
+    : `Act ${current} · ${ACTS[current].title}`;
   el.textContent = label;
   el.dataset.act = current;
 }
@@ -208,7 +217,7 @@ function renderMission() {
 
   ACTS.forEach((act, i) => {
     const status = actStatus(i);
-    const num = i + 1;
+    const num = i;
     const badge = status === 'done' ? '✓' : (status === 'locked' ? '🔒' : num);
 
     html += `<div class="step ${status}">
@@ -237,8 +246,12 @@ function renderMission() {
         html += `<button class="btn small solid" onclick="completeUpTo(${i})">${nextLabel}</button>`;
         html += `<a class="doc-link" href="/docs/STORYLINE.md" target="_blank">walkthrough</a>`;
         html += '</div>';
-      } else if (status === 'done' && act.where) {
-        html += `<div class="step-actions"><button class="btn small ghost" onclick="gotoTab('${act.where}')">Revisit ${act.whereLabel.replace('Open ', '')} →</button></div>`;
+      } else if (status === 'done') {
+        html += `<div class="step-defend"><b>Defend:</b> which control should have stopped you? Answer first, then check.
+          <details><summary>Show the control</summary><p>${act.control}</p></details></div>`;
+        if (act.where) {
+          html += `<div class="step-actions"><button class="btn small ghost" onclick="gotoTab('${act.where}')">Revisit ${act.whereLabel.replace('Open ', '')} →</button></div>`;
+        }
       }
     }
 
@@ -247,7 +260,7 @@ function renderMission() {
 
   html += '</div>';
   if (doneUpTo >= total - 1) {
-    html += `<div class="mission-done">🎓 You walked the whole campus. Now flip it: for each act, write the control that should have stopped you. See the <a href="/docs/VULN_MAP.md" target="_blank">weakness map</a>.</div>`;
+    html += `<div class="mission-done">🎓 You walked the whole campus. Now flip it: each act above names the control that should have stopped you. Compare them with your own answers and the <a href="/docs/VULN_MAP.md" target="_blank">weakness map</a>.</div>`;
   }
   el.innerHTML = html;
 }

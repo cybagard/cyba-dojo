@@ -204,9 +204,15 @@ Copyright 2026 cybagard. Released under the GNU General Public License v3.0 only
 distribute a modified version, you must release it under the same licence with its
 source. Share and enjoy — just keep it in the lab.
 
-Bundled third-party files keep their own licences: the Space Grotesk and JetBrains Mono
-fonts in `public/portal/assets/cybagard/fonts/` are under the SIL Open Font License 1.1,
-and the generated API reference in `public/apidoc/` includes its own third-party assets.
+The GPL covers the dojo's own files. These bundled files keep their own licences:
+
+- `public/portal/assets/cybagard/` is the cybagard design system: the styles, tokens and
+  the cybagard logos. Copyright cybagard, all rights reserved; it ships here under
+  `public/portal/assets/cybagard/LICENSE` and is not covered by the GPL. Do not reuse
+  the logos or the name to brand another project.
+- The Space Grotesk and JetBrains Mono fonts in `public/portal/assets/cybagard/fonts/`
+  are under the SIL Open Font License 1.1.
+- The generated API reference in `public/apidoc/` includes its own third-party assets.
 
 ## Acknowledgements
 

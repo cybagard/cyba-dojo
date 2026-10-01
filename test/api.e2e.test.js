@@ -158,6 +158,9 @@ test('Act 6 · Reach inside & go quiet — SSRF, unsafe upstream consumption, up
   assert.match(ssrf.json.data.contentType, /application\/json/, 'SSR-1: fetched the JSON ops endpoint');
   assert.ok(ssrf.json.data.preview.includes('"node"'),
     'SSR-1: SSRF returned the internal /status body (config secrets follow in the full response)');
+  const meAfterImport = await c.get('/me');
+  assert.equal(meAfterImport.json.data.avatar_url, base + '/status',
+    'SSR-1: the user-supplied URL was also persisted to the profile record');
 
   // UAP-1: the timetable importer trusts and reflects the upstream response.
   const uap = await c.post('/me/timetable/import', { feedUrl: base + '/api/v1/students/ping' });
@@ -175,6 +178,51 @@ test('Act 6 · Reach inside & go quiet — SSRF, unsafe upstream consumption, up
   const served = await c.rootGet(up.json.data.stored_path);
   assert.equal(served.status, 200, 'INT-1: uploaded file served back from /uploads');
   assert.ok(served.text.includes('unverified'), 'INT-1: served content matches upload');
+
+  // INT-1 (type): a "spreadsheet" part with a binary-ish body is accepted with no
+  // type filtering, and round-trips from /uploads just like the HTML one.
+  const xlsxName = `grades-${Date.now()}.xlsx`;
+  const xlsxForm = new FormData();
+  xlsxForm.append('file',
+    new Blob(['PK\x03\x04 not a real workbook'], { type: 'application/octet-stream' }), xlsxName);
+  const xlsx = await c.post('/courses/materials', undefined, { form: xlsxForm });
+  assert.equal(xlsx.json.result, 'success', 'INT-1: .xlsx part accepted, no type checks');
+  assert.equal(xlsx.json.data.checksum, null, 'INT-1: absent checksum stored as null');
+  const xlsxServed = await c.rootGet(xlsx.json.data.stored_path);
+  assert.equal(xlsxServed.status, 200, 'INT-1: .xlsx part served back from /uploads');
+  assert.ok(xlsxServed.text.includes('not a real workbook'), 'INT-1: .xlsx content round-trips');
+
+  // INT-1 (size): an 11 MiB payload comfortably exceeds common upload limits and
+  // is still accepted whole.
+  const bigName = `blob-${Date.now()}.bin`;
+  const bigForm = new FormData();
+  bigForm.append('file', new Blob([new Uint8Array(11 * 1024 * 1024).fill(7)]), bigName);
+  const big = await c.post('/courses/materials', undefined, { form: bigForm });
+  assert.equal(big.json.result, 'success', 'INT-1: 11 MiB upload accepted, no size limit');
+  const bigServed = await c.rootGet(big.json.data.stored_path);
+  assert.equal(bigServed.status, 200, 'INT-1: oversized file served back from /uploads');
+
+  // INT-1 (filename): files are stored under the client-supplied name with no
+  // deduplication or ownership check, so a same-named upload from another user
+  // silently overwrites the first file on disk.
+  const clash = `shared-${Date.now()}.txt`;
+  const formA = new FormData();
+  formA.append('file', new Blob(['first writer'], { type: 'text/plain' }), clash);
+  const a = await c.post('/courses/materials', undefined, { form: formA });
+  assert.equal(a.json.result, 'success', 'INT-1: first upload accepted');
+
+  const c2 = await loginStudent('student2', 'student2');
+  const formB = new FormData();
+  formB.append('file', new Blob(['second writer'], { type: 'text/plain' }), clash);
+  const b = await c2.post('/courses/materials', undefined, { form: formB });
+  assert.equal(b.json.result, 'success', 'INT-1: second user uploads the same filename');
+  assert.equal(b.json.data.stored_path, a.json.data.stored_path,
+    'INT-1: both records point at the one client-named path');
+
+  const after = await c.rootGet(`/uploads/${clash}`);
+  assert.equal(after.status, 200);
+  assert.ok(after.text.includes('second writer'), 'INT-1: same-named upload overwrote the first file');
+  assert.ok(!after.text.includes('first writer'), 'INT-1: the earlier file content is gone');
 
   // XSS-1: announcement markdown is rendered to HTML without sanitisation.
   const payload = '<img src=x onerror="alert(1)">';
